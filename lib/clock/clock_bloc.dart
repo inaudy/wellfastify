@@ -1,13 +1,15 @@
 // ignore_for_file: prefer_final_fields
 
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wellfastify/models/ticker.dart';
 part 'clock_event.dart';
 part 'clock_state.dart';
 
-class ClockBloc extends Bloc<ClockEvent, ClockState> {
+class ClockBloc extends Bloc<ClockEvent, ClockState>
+    with WidgetsBindingObserver {
   final SharedPreferences _sharedPreferences;
   final Ticker _ticker;
   static int _duration = 18 * 60 * 60; //18:6 FASTING
@@ -15,7 +17,8 @@ class ClockBloc extends Bloc<ClockEvent, ClockState> {
   StreamSubscription<int>? _tickerSubscription;
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    WidgetsBinding.instance.removeObserver(this);
     _tickerSubscription?.cancel();
     return super.close();
   }
@@ -99,5 +102,12 @@ class ClockBloc extends Bloc<ClockEvent, ClockState> {
 
   void _setClock(SetClock event, Emitter<ClockState> emit) {
     emit(ClockInitial(event.duration, event.elapsed));
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _init();
+    }
   }
 }
