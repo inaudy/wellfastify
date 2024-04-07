@@ -28,6 +28,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
       : _ticker = ticker,
         _sharedPreferences = sharedPreferences,
         super(ClockInitial(_duration, 0)) {
+    WidgetsBinding.instance.addObserver(this);
     on<SetClock>(_setClock);
     on<StartedFromPref>(_onStartFromPref);
     on<StartedClock>(_onStarted);
