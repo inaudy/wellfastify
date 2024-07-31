@@ -1,9 +1,8 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:wellfastify/clock/clock_bloc.dart';
 import 'package:wellfastify/presentation/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wellfastify/presentation/widgets/circular_canvas.dart';
 
 class CircularTimer extends StatelessWidget {
   const CircularTimer({super.key});
@@ -30,12 +29,12 @@ class CircularTimer extends StatelessWidget {
     return SizedBox(
       width: 250,
       height: 250,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          BlocBuilder<ClockBloc, ClockState>(
-            builder: (context, state) {
-              return CircularProgressIndicator(
+      child: BlocBuilder<ClockBloc, ClockState>(
+        builder: (context, state) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              /*CircularProgressIndicator(
                 value: state.duration > 0
                     ? state.elapsed / state.duration
                     : 0 / 60,
@@ -43,74 +42,82 @@ class CircularTimer extends StatelessWidget {
                 strokeWidth: 20,
                 backgroundColor: Colors.orange,
                 color: color1,
-              );
-            },
-          ),
-          Column(
-            children: [
+              ),*/
+              CircularCanvas(progress: state.elapsed / state.duration),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Text(
+                      'Timer Elapsed',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Colors.blueGrey),
+                    ),
+                  )
+                ],
+              ),
+              Center(
+                child: BlocBuilder<ClockBloc, ClockState>(
+                    builder: (context, state) {
+                  return Text(
+                    '$hours:$minutes:$seconds',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayMedium!
+                        .copyWith(color: color1, fontWeight: FontWeight.bold),
+                  );
+                }),
+              ),
               Padding(
-                padding: const EdgeInsets.only(top: 50.0),
-                child: Text(
-                  'Timer Elapsed',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.blueGrey),
+                padding: const EdgeInsets.only(bottom: 30),
+                child: BlocBuilder<ClockBloc, ClockState>(
+                  builder: (context, state) {
+                    if (timeRemain > 0) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Remaining',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(color: Colors.blueGrey),
+                          ),
+                          Text(
+                            '$hoursRemain:$minutesRemain:$secondsRemain',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'Completed',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      );
+                    }
+                  },
                 ),
               )
             ],
-          ),
-          Center(
-            child:
-                BlocBuilder<ClockBloc, ClockState>(builder: (context, state) {
-              print(state.elapsed);
-              return Text(
-                '$hours:$minutes:$seconds',
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium!
-                    .copyWith(color: color1, fontWeight: FontWeight.bold),
-              );
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: BlocBuilder<ClockBloc, ClockState>(
-              builder: (context, state) {
-                if (timeRemain > 0) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Remaining',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: Colors.blueGrey),
-                      ),
-                      Text(
-                        '$hoursRemain:$minutesRemain:$secondsRemain',
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Colors.orange, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Completed',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: Colors.green, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  );
-                }
-              },
-            ),
-          )
-        ],
+          );
+        },
       ),
     );
   }

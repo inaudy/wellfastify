@@ -16,9 +16,7 @@ class StartButton extends StatelessWidget {
                 ? context
                     .read<ClockBloc>()
                     .add(StartedClock(state.duration, elapsed: 0))
-                : context
-                    .read<ClockBloc>()
-                    .add(ResetClock(duration: state.duration));
+                : context.read<ClockBloc>().add(ResetClock(state.duration));
           },
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(

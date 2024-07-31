@@ -13,8 +13,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key, required this.sharedPreferences});
-  SharedPreferences sharedPreferences;
+  const MyApp({super.key, required this.sharedPreferences});
+  final SharedPreferences sharedPreferences;
 
   @override
   Widget build(BuildContext context) {

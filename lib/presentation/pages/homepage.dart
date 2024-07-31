@@ -7,8 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    // Add navigation logic here based on the selected index.
+  }
+
   @override
   Widget build(BuildContext context) {
     DateTime startTime = DateTime.now();
@@ -18,39 +33,15 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Dashboard',
+          'WELLFASTIFY',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-              decoration: boxWidgetsDecoration,
-              child: Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(Icons.rocket_launch_rounded,
-                        size: 50, color: Colors.amber),
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        'Yay, you are going to change your life!',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const Text('Congratulations you are doing good!'),
-                    ],
-                  )
-                ],
-              ),
-            ),
             const SizedBox(
               height: 10,
             ),
@@ -58,7 +49,8 @@ class HomePage extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: boxWidgetsDecoration,
               child: SizedBox(
-                height: 520,
+                // ajustar altura dinamicamente aqui
+                height: 650,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -75,6 +67,7 @@ class HomePage extends StatelessWidget {
                             height: 25,
                             child: BlocBuilder<ClockBloc, ClockState>(
                               builder: (context, state) {
+                                //boton mas grande aqui
                                 return ElevatedButton(
                                   onPressed: state is! ClockInitial
                                       ? null
@@ -180,53 +173,37 @@ class HomePage extends StatelessWidget {
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(children: [
-                        Expanded(child: StartButton()),
-                      ]),
+                      child: Row(
+                        children: [
+                          Expanded(child: StartButton()),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.bookmark,
-                    color: Colors.amber,
-                    size: 50,
-                  ),
-                  Text(
-                    'Recomendations',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-                margin: const EdgeInsets.only(left: 20, right: 20),
-                decoration: boxWidgetsDecoration,
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('• Start slow.'),
-                          Text('• Drink a lot of water.'),
-                          Text('• Clearly define the reason you’re doing it.')
-                        ],
-                      ),
-                    ],
-                  ),
-                )),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }

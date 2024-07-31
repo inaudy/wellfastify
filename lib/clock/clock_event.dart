@@ -1,44 +1,46 @@
 part of 'clock_bloc.dart';
 
-sealed class ClockEvent {
+abstract class ClockEvent {
   const ClockEvent();
 }
 
-final class StartedClockInitial extends ClockEvent {
-  const StartedClockInitial();
+class SetClock extends ClockEvent {
+  final int duration;
+  final int elapsed;
+
+  const SetClock(this.duration, this.elapsed);
 }
 
-final class StartedFromPref extends ClockEvent {
+class StartedFromPref extends ClockEvent {
+  final int duration;
+  final int elapsed;
+
   const StartedFromPref(this.duration, {required this.elapsed});
-  final int elapsed;
-  final int duration;
 }
 
-final class StartedClock extends ClockEvent {
+class StartedClock extends ClockEvent {
+  final int duration;
+  final int elapsed;
+
   const StartedClock(this.duration, {required this.elapsed});
-  final int elapsed;
-  final int duration;
 }
 
-final class SetClock extends ClockEvent {
-  const SetClock({required this.duration, required this.elapsed});
+class ResetClock extends ClockEvent {
   final int duration;
-  final int elapsed;
+
+  const ResetClock(this.duration);
 }
 
-final class ResetClock extends ClockEvent {
-  const ResetClock({required this.duration});
-  final int duration;
-}
-
-final class CompletedClock extends ClockEvent {
-  const CompletedClock({required this.duration, required this.elapsed});
+class CompletedClock extends ClockEvent {
   final int duration;
   final int elapsed;
+
+  const CompletedClock(this.duration, {required this.elapsed});
 }
 
-final class TickedClock extends ClockEvent {
+class TickedClock extends ClockEvent {
   final int duration;
   final int elapsed;
-  const TickedClock({required this.elapsed, required this.duration});
+
+  const TickedClock({required this.duration, required this.elapsed});
 }
