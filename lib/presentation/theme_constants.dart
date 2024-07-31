@@ -18,7 +18,7 @@ TextTheme fontTheme = GoogleFonts.openSansTextTheme();
 
 // Boxes widget shadow and borders
 BoxDecoration boxWidgetsDecoration = BoxDecoration(
-    //color: Colors.white,
+    color: Colors.white,
     borderRadius: const BorderRadius.all(
       Radius.circular(16),
     ),

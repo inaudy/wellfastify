@@ -42,7 +42,7 @@ class TimerPainter extends CustomPainter {
 
     Paint progressPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 30.0
+      ..strokeWidth = 20.0
       ..strokeCap = StrokeCap.round
       ..shader = _buildGradient(size);
 
@@ -57,10 +57,13 @@ class TimerPainter extends CustomPainter {
 
     Offset center = Offset(size.width / 2, size.height / 2);
     double radius = size.width / 2;
+
+    // Draw bacground circle
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    double angle = 2 * pi;
-    angle = angle * (progress > 0 ? progress + 0.001 : progress);
+    // Draw the arc
+    double angle = 2 * pi * progress;
+
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       -pi / 2,
@@ -68,21 +71,16 @@ class TimerPainter extends CustomPainter {
       false,
       progressPaint,
     );
-    double elapsedAngle = -pi / 2 + 2 * pi * progress;
-    double elapsedX = center.dx + radius * cos(elapsedAngle);
-    double elapsedY = center.dy + radius * sin(elapsedAngle);
 
-    canvas.drawCircle(
-      Offset(center.dx + radius * cos(-pi / 2 + 2 * pi),
-          center.dy + radius * sin(-pi / 2 + 2 * pi)),
-      9.0,
-      borderPaintStarted,
-    );
-    canvas.drawCircle(
-      Offset(elapsedX, elapsedY),
-      10.0,
-      elapsedPaintCircle,
-    );
+    // Draw start circle
+    double startX = center.dx + radius * cos(-pi / 2);
+    double startY = center.dy + radius * sin(-pi / 2);
+    canvas.drawCircle(Offset(startX, startY), 9.0, elapsedPaintCircle);
+
+    // Draw end circle
+    double endX = center.dx + radius * cos(-3.141592653589793 / 2 + angle);
+    double endY = center.dy + radius * sin(-3.141592653589793 / 2 + angle);
+    canvas.drawCircle(Offset(endX, endY), 9.0, elapsedPaintCircle);
   }
 
   @override
