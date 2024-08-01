@@ -25,13 +25,11 @@ class StartButton extends StatelessWidget {
                       ? BorderSide.none
                       : const BorderSide(color: Colors.deepOrange, width: 2)),
               minimumSize: const Size.fromHeight(48),
-              backgroundColor: state is ClockInitial ? color1 : Colors.white),
+              backgroundColor: state is ClockInitial ? color1 : Colors.red),
           child: Text(
             state is ClockInitial ? 'START' : 'STOP',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: state is ClockInitial ? Colors.white : Colors.deepOrange,
-                fontWeight: FontWeight.bold,
-                fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
           ),
         );
       },

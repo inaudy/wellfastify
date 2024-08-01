@@ -23,7 +23,8 @@ class FastingPlans extends StatelessWidget {
       child: InkWell(
         onTap: () {
           plan = Duration(hours: plan).inSeconds;
-          context.read<ClockBloc>().add(const SetClock(60, 0));
+          context.read<ClockBloc>().add(SetClock(plan, 0));
+          // aqui agregar para cambiar la duracion
 
           Navigator.pop(context);
         },

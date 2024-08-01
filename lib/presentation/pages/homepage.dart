@@ -78,33 +78,57 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            BlocBuilder<ClockBloc, ClockState>(
+                              builder: (context, state) {
+                                return Visibility(
+                                  visible: state is! ClockInitial,
+                                  maintainSize: true,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Fasting',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge),
+                                      const Icon(
+                                        Icons.whatshot,
+                                        color: Colors.deepOrange,
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
+                            //plan menu buttom
+
+                            ,
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: SizedBox(
-                                    width: 90,
-                                    height: 30,
+                                    width: 120,
+                                    height: 48,
                                     child: BlocBuilder<ClockBloc, ClockState>(
                                       builder: (context, state) {
                                         return ElevatedButton(
-                                          onPressed: state is! ClockInitial
-                                              ? null
-                                              : () {
-                                                  Navigator.pushNamed(
-                                                      context, '/second');
-                                                },
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/second');
+                                          },
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor:
                                                   Colors.orangeAccent,
                                               padding: EdgeInsets.zero,
                                               minimumSize: Size.zero),
                                           child: Text(
-                                            '${Duration(seconds: context.select((ClockBloc bloc) => bloc.state.duration)).inHours}:${24 - Duration(seconds: context.select((ClockBloc bloc) => bloc.state.duration)).inHours}',
+                                            '${Duration(seconds: state.duration).inHours}:${24 - Duration(seconds: state.duration).inHours}',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .titleMedium!
+                                                .titleLarge!
                                                 .copyWith(color: Colors.white),
                                           ),
                                         );
@@ -169,29 +193,6 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             Row(
                                               children: [
-                                                /*Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 5),
-                                                      child: Text('(+1)',
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .titleLarge!
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: color1,
-                                                                  fontSize:
-                                                                      12)),
-                                                    ),
-                                                  ],
-                                                ),*/
                                                 Text(
                                                   DateFormat('EEE d, HH:mm')
                                                       .format(endTime),
@@ -245,7 +246,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings',
+            label: 'Weitgh',
           ),
         ],
         currentIndex: _selectedIndex,

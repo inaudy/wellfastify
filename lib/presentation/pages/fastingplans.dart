@@ -21,7 +21,7 @@ class FastingPlansPage extends StatelessWidget {
           child: Column(children: [
             FastingPlans(
               dificult: 1,
-              plan: 14,
+              plan: 13,
               background: Colors.indigo,
               startsColor: Colors.blue,
             ),

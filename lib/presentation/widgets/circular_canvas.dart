@@ -50,15 +50,10 @@ class TimerPainter extends CustomPainter {
       ..color = Colors.indigo
       ..style = PaintingStyle.fill;
 
-    Paint borderPaintStarted = Paint()
-      ..color = Colors.indigo
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0;
-
     Offset center = Offset(size.width / 2, size.height / 2);
     double radius = size.width / 2;
 
-    // Draw bacground circle
+    // Draw background circle
     canvas.drawCircle(center, radius, backgroundPaint);
 
     // Draw the arc
@@ -71,11 +66,6 @@ class TimerPainter extends CustomPainter {
       false,
       progressPaint,
     );
-
-    // Draw start circle
-    double startX = center.dx + radius * cos(-pi / 2);
-    double startY = center.dy + radius * sin(-pi / 2);
-    canvas.drawCircle(Offset(startX, startY), 9.0, elapsedPaintCircle);
 
     // Draw end circle
     double endX = center.dx + radius * cos(-3.141592653589793 / 2 + angle);
