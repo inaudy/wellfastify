@@ -78,16 +78,14 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // Replace CircularTimer with a placeholder or your own implementation
-                            const CircularTimer(),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: SizedBox(
-                                    width: 50,
-                                    height: 25,
+                                    width: 90,
+                                    height: 30,
                                     child: BlocBuilder<ClockBloc, ClockState>(
                                       builder: (context, state) {
                                         return ElevatedButton(
@@ -98,7 +96,8 @@ class _HomePageState extends State<HomePage> {
                                                       context, '/second');
                                                 },
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.orange,
+                                              backgroundColor:
+                                                  Colors.orangeAccent,
                                               padding: EdgeInsets.zero,
                                               minimumSize: Size.zero),
                                           child: Text(
@@ -115,84 +114,105 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Column(
+                            const CircularTimer(),
+                            BlocBuilder<ClockBloc, ClockState>(
+                              builder: (context, state) {
+                                return Visibility(
+                                  visible: state is! ClockInitial,
+                                  maintainSize: true,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text(
-                                        'Start from',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(color: Colors.grey),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Column(
+                                          children: [
+                                            // si el counter
+                                            Text(
+                                              'Started',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium!
+                                                  .copyWith(color: Colors.grey),
+                                            ),
+                                            Text(
+                                              DateFormat('EEE d, HH:mm')
+                                                  .format(startTime),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge!
+                                                  .copyWith(
+                                                      color: color1,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Text(
-                                        DateFormat.Hm().format(startTime),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge!
-                                            .copyWith(
-                                                color: color1,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                      ),
+                                      const SizedBox(width: 10),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              'Goal',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium!
+                                                  .copyWith(color: Colors.grey),
+                                            ),
+                                            Row(
+                                              children: [
+                                                /*Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 5),
+                                                      child: Text('(+1)',
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .titleLarge!
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: color1,
+                                                                  fontSize:
+                                                                      12)),
+                                                    ),
+                                                  ],
+                                                ),*/
+                                                Text(
+                                                  DateFormat('EEE d, HH:mm')
+                                                      .format(endTime),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge!
+                                                      .copyWith(
+                                                          color: color1,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
-                                ),
-                                const SizedBox(width: 10),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'End to',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(color: Colors.grey),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 5),
-                                                child: Text('(+1)',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleLarge!
-                                                        .copyWith(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: color1,
-                                                            fontSize: 12)),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            DateFormat.Hm().format(endTime),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge!
-                                                .copyWith(
-                                                    color: color1,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                                );
+                              },
                             ),
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 24.0),

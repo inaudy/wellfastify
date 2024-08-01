@@ -10,7 +10,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
     with WidgetsBindingObserver {
   final SharedPreferences _sharedPreferences;
   final Ticker _ticker;
-  static const int _duration = 18 * 60 * 60; // 18:6 FASTING
+  static const int _duration = 24 * 60 * 60; // 18:6 FASTING
   int _elapsed = 0;
   StreamSubscription<int>? _tickerSubscription;
 
