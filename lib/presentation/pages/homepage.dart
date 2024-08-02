@@ -92,18 +92,18 @@ class _HomePageState extends State<HomePage> {
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleLarge),
-                                      const Icon(
+                                      /*const Icon(
                                         Icons.whatshot,
                                         color: Colors.deepOrange,
-                                      )
+                                      )*/
                                     ],
                                   ),
                                 );
                               },
-                            )
-                            //plan menu buttom
+                            ),
 
-                            ,
+                            const CircularTimer(),
+                            //plan menu buttom
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -138,7 +138,6 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            const CircularTimer(),
                             BlocBuilder<ClockBloc, ClockState>(
                               builder: (context, state) {
                                 return Visibility(

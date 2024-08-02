@@ -22,6 +22,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
         super(const ClockInitial(_duration, 0)) {
     WidgetsBinding.instance.addObserver(this);
     on<SetClock>(_setClock);
+    on<ChangeDuration>(_onChangeDuration);
     on<StartedFromPref>(_onStartFromPref);
     on<StartedClock>(_onStarted);
     on<ResetClock>(_onReset);
@@ -60,6 +61,13 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
   void _onStarted(StartedClock event, Emitter<ClockState> emit) {
     _sharedPreferences.setInt(
         'saved_datetime', DateTime.now().millisecondsSinceEpoch);
+    _sharedPreferences.setInt('duration', event.duration);
+    _elapsed = event.elapsed;
+    emit(ClockRunning(event.duration, event.elapsed));
+    _startTicker(event.duration, event.elapsed);
+  }
+
+  void _onChangeDuration(ChangeDuration event, Emitter<ClockState> emit) {
     _sharedPreferences.setInt('duration', event.duration);
     _elapsed = event.elapsed;
     emit(ClockRunning(event.duration, event.elapsed));

@@ -18,6 +18,12 @@ class StartedFromPref extends ClockEvent {
   const StartedFromPref(this.duration, {required this.elapsed});
 }
 
+class ChangeDuration extends ClockEvent {
+  final int duration;
+  final int elapsed;
+  const ChangeDuration(this.duration, this.elapsed);
+}
+
 class StartedClock extends ClockEvent {
   final int duration;
   final int elapsed;

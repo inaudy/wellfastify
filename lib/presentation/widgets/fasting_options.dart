@@ -20,83 +20,99 @@ class FastingPlans extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 25),
-      child: InkWell(
-        onTap: () {
-          plan = Duration(hours: plan).inSeconds;
-          context.read<ClockBloc>().add(SetClock(plan, 0));
-          // aqui agregar para cambiar la duracion
+      child: BlocBuilder<ClockBloc, ClockState>(
+        builder: (context, state) {
+          return InkWell(
+            onTap: () {
+              plan = Duration(hours: plan).inSeconds;
 
-          Navigator.pop(context);
-        },
-        borderRadius: BorderRadius.circular(16),
-        splashColor: background.withOpacity(0.4),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: background.withOpacity(0.2),
+              //context.read<ClockBloc>().add(SetClock(plan, 0));
+              // aqui agregar para cambiar la duracion
+              if (state.elapsed > 0) {
+                print('mayor 0 ${state.elapsed}');
+                context.read<ClockBloc>().add(
+                      ChangeDuration(plan, state.elapsed),
+                    );
+              } else {
+                print('menor 0 ${state.elapsed}');
+                context.read<ClockBloc>().add(
+                      SetClock(plan, 0),
+                    );
+              }
+
+              Navigator.pop(context);
+            },
             borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      ('$plan:${24 - plan}'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.whatshot,
-                          color: startsColor,
-                        ),
-                        Icon(
-                          Icons.whatshot,
-                          color: dificult > 1
-                              ? startsColor
-                              : startsColor.withOpacity(0.5),
-                        ),
-                        Icon(
-                          Icons.whatshot,
-                          color: dificult > 2
-                              ? startsColor
-                              : startsColor.withOpacity(0.5),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+            splashColor: background.withOpacity(0.4),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: background.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      // get text from text
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('• $plan hours fasting',
-                            style: Theme.of(context).textTheme.bodyLarge!),
+                        Text(
+                          ('$plan:${24 - plan}'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.whatshot,
+                              color: startsColor,
+                            ),
+                            Icon(
+                              Icons.whatshot,
+                              color: dificult > 1
+                                  ? startsColor
+                                  : startsColor.withOpacity(0.5),
+                            ),
+                            Icon(
+                              Icons.whatshot,
+                              color: dificult > 2
+                                  ? startsColor
+                                  : startsColor.withOpacity(0.5),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                    Row(
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('• ${24 - plan} hours eating',
-                            style: Theme.of(context).textTheme.bodyLarge!),
+                        Row(
+                          // get text from text
+                          children: [
+                            Text('• $plan hours fasting',
+                                style: Theme.of(context).textTheme.bodyLarge!),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text('• ${24 - plan} hours eating',
+                                style: Theme.of(context).textTheme.bodyLarge!),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
