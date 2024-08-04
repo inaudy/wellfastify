@@ -5,6 +5,7 @@ import 'package:wellfastify/presentation/widgets/start_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,12 +16,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    // Add navigation logic here based on the selected index.
+    switch (index) {
+      case 0:
+        context.go('/home');
+        break;
+      case 1:
+        context.go('/history');
+        break;
+      case 2:
+        context.go('/settings');
+        break;
+    }
   }
 
   @override
@@ -116,8 +126,7 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context, state) {
                                         return ElevatedButton(
                                           onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, '/second');
+                                            Navigator.pushNamed(context, '/2');
                                           },
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor:
@@ -245,7 +254,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Weitgh',
+            label: 'Weight',
           ),
         ],
         currentIndex: _selectedIndex,

@@ -42,7 +42,7 @@ class TimerPainter extends CustomPainter {
 
     Paint progressPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 20.0
+      ..strokeWidth = 26.0
       ..strokeCap = StrokeCap.round
       ..shader = _buildGradient(size);
 
@@ -70,7 +70,7 @@ class TimerPainter extends CustomPainter {
     // Draw end circle
     double endX = center.dx + radius * cos(-3.141592653589793 / 2 + angle);
     double endY = center.dy + radius * sin(-3.141592653589793 / 2 + angle);
-    canvas.drawCircle(Offset(endX, endY), 9.0, elapsedPaintCircle);
+    canvas.drawCircle(Offset(endX, endY), 14.0, elapsedPaintCircle);
   }
 
   @override
