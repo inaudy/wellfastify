@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wellfastify/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock/clock_bloc.dart';
 import 'package:wellfastify/models/ticker.dart';
-import 'package:wellfastify/presentation/pages/fastingplans.dart';
+import 'package:wellfastify/presentation/pages/fasting_plans.dart';
 import 'package:wellfastify/presentation/pages/history.dart';
-import 'package:wellfastify/presentation/pages/homepage.dart';
+import 'package:wellfastify/presentation/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +29,10 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/settings',
       builder: (context, state) => const WeightPage(),
+    ),
+    GoRoute(
+      path: '/fasting_plans',
+      builder: (context, state) => const FastingPlansPage(),
     ),
   ],
 );

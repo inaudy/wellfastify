@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wellfastify/clock/clock_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:wellfastify/blocs/clock/clock_bloc.dart';
 
 class FastingPlans extends StatelessWidget {
   FastingPlans(
@@ -29,18 +30,15 @@ class FastingPlans extends StatelessWidget {
               //context.read<ClockBloc>().add(SetClock(plan, 0));
               // aqui agregar para cambiar la duracion
               if (state.elapsed > 0) {
-                print('mayor 0 ${state.elapsed}');
                 context.read<ClockBloc>().add(
                       ChangeDuration(plan, state.elapsed),
                     );
               } else {
-                print('menor 0 ${state.elapsed}');
                 context.read<ClockBloc>().add(
                       SetClock(plan, 0),
                     );
               }
-
-              Navigator.pop(context);
+              context.go('/home');
             },
             borderRadius: BorderRadius.circular(16),
             splashColor: background.withOpacity(0.4),

@@ -1,4 +1,4 @@
-import 'package:wellfastify/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock/clock_bloc.dart';
 import 'package:wellfastify/presentation/theme_constants.dart';
 import 'package:wellfastify/presentation/widgets/circular_timer.dart';
 import 'package:wellfastify/presentation/widgets/start_button.dart';
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                                       builder: (context, state) {
                                         return ElevatedButton(
                                           onPressed: () {
-                                            Navigator.pushNamed(context, '/2');
+                                            context.go('/fasting_plans');
                                           },
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor:
