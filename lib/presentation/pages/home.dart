@@ -74,6 +74,10 @@ class HomePageState extends State<HomePage> {
                                   height: 48,
                                   child: BlocBuilder<ClockBloc, ClockState>(
                                     builder: (context, state) {
+                                      final duration =
+                                          Duration(seconds: state.duration);
+                                      final hours = duration.inHours;
+                                      final eatingHours = 24 - hours;
                                       return ElevatedButton(
                                         onPressed: () {
                                           context.push('/widgets/fastingplans');
@@ -84,7 +88,7 @@ class HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.zero,
                                             minimumSize: Size.zero),
                                         child: Text(
-                                          '${Duration(seconds: state.duration).inHours}:${24 - Duration(seconds: state.duration).inHours}',
+                                          '$hours:$eatingHours',
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleLarge!
