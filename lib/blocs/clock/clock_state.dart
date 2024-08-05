@@ -8,7 +8,7 @@ abstract class ClockState {
 }
 
 class ClockInitial extends ClockState {
-  const ClockInitial(int duration, int elapsed) : super(duration, elapsed);
+  const ClockInitial(int duration) : super(duration, 0);
 }
 
 class ClockRunning extends ClockState {

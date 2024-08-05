@@ -19,7 +19,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
     required SharedPreferences sharedPreferences,
   })  : _ticker = ticker,
         _sharedPreferences = sharedPreferences,
-        super(const ClockInitial(_duration, 0)) {
+        super(const ClockInitial(_duration)) {
     WidgetsBinding.instance.addObserver(this);
     on<SetClock>(_setClock);
     on<ChangeDuration>(_onChangeDuration);
@@ -59,15 +59,19 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
   }
 
   void _onStarted(StartedClock event, Emitter<ClockState> emit) {
+    _sharedPreferences.remove('duration');
+    _sharedPreferences.setInt('duration', event.duration);
+    _sharedPreferences.remove('saved_datetime');
     _sharedPreferences.setInt(
         'saved_datetime', DateTime.now().millisecondsSinceEpoch);
-    _sharedPreferences.setInt('duration', event.duration);
+
     _elapsed = event.elapsed;
     emit(ClockRunning(event.duration, event.elapsed));
     _startTicker(event.duration, event.elapsed);
   }
 
   void _onChangeDuration(ChangeDuration event, Emitter<ClockState> emit) {
+    _sharedPreferences.remove('duration');
     _sharedPreferences.setInt('duration', event.duration);
     _elapsed = event.elapsed;
     emit(ClockRunning(event.duration, event.elapsed));
@@ -78,7 +82,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
     _sharedPreferences.remove('saved_datetime');
     _sharedPreferences.remove('duration');
     _tickerSubscription?.cancel();
-    emit(ClockInitial(event.duration, 0));
+    emit(ClockInitial(event.duration));
   }
 
   void _onCompleted(CompletedClock event, Emitter<ClockState> emit) {
@@ -93,7 +97,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
   }
 
   void _setClock(SetClock event, Emitter<ClockState> emit) {
-    emit(ClockInitial(event.duration, event.elapsed));
+    emit(ClockInitial(event.duration));
   }
 
   void _startTicker(int duration, int elapsed) {

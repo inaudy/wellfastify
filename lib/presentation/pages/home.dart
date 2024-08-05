@@ -76,7 +76,7 @@ class HomePageState extends State<HomePage> {
                                     builder: (context, state) {
                                       return ElevatedButton(
                                         onPressed: () {
-                                          context.go('/widgets/fastingplans');
+                                          context.push('/widgets/fastingplans');
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor:
