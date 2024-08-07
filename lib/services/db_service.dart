@@ -111,19 +111,33 @@ class DBService {
 
   // CRUD methods for Timer
   //Insert Timer
-  Future<int> insertTimer(Timer timer) async {
+  Future<int> insertTimer(TimerData timer) async {
     final db = await database;
     return await db.insert('timer', timer.toMap());
   }
 
   //Get Timer
-  Future<Timer?> getTimer() async {
+  Future<TimerData?> getTimer() async {
     final db = await database;
+
     final List<Map<String, dynamic>> maps = await db.query('timer', limit: 1);
     if (maps.isNotEmpty) {
-      return Timer.fromMap(maps.first);
+      return TimerData.fromMap(maps.first);
     }
     return null;
+  }
+
+  //Update Timer
+  Future<int> updateTimerData({required int newDuration}) async {
+    final db = await database;
+    return await db.update(
+      'timer',
+      {
+        'duration': newDuration,
+      },
+      where: 'id = ?', // Condition to update only the first row
+      whereArgs: [1], // ID of the first row
+    );
   }
 
   //Delete Timer

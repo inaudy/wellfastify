@@ -1,9 +1,9 @@
-class Timer {
+class TimerData {
   int? id;
   DateTime startTime;
   int duration;
 
-  Timer({this.id, required this.startTime, required this.duration});
+  TimerData({this.id, required this.startTime, required this.duration});
 
   Map<String, dynamic> toMap() {
     return {
@@ -13,8 +13,8 @@ class Timer {
     };
   }
 
-  factory Timer.fromMap(Map<String, dynamic> map) {
-    return Timer(
+  factory TimerData.fromMap(Map<String, dynamic> map) {
+    return TimerData(
       id: map['id'],
       startTime: DateTime.parse(map['startTime']),
       duration: map['duration'],

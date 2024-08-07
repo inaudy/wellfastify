@@ -17,10 +17,18 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    DateTime startTime = DateTime.now();
-    DateTime endTime = startTime.add(Duration(
-        seconds: context.select((ClockBloc bloc) => bloc.state.duration)));
-
+    int elapsed = context.select((ClockBloc bloc) => bloc.state.elapsed);
+    DateTime startTime;
+    DateTime endTime;
+    if (elapsed > 0) {
+      startTime = DateTime.now().subtract(Duration(seconds: elapsed));
+      endTime = startTime.add(Duration(
+          seconds: context.select((ClockBloc bloc) => bloc.state.duration)));
+    } else {
+      startTime = DateTime.now();
+      endTime = startTime.add(Duration(
+          seconds: context.select((ClockBloc bloc) => bloc.state.duration)));
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(

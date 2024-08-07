@@ -1,24 +1,27 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wellfastify/models/ticker.dart';
+import 'package:wellfastify/models/timer_model.dart';
+import 'package:wellfastify/services/db_service.dart';
 part 'clock_event.dart';
 part 'clock_state.dart';
 
 class ClockBloc extends Bloc<ClockEvent, ClockState>
     with WidgetsBindingObserver {
-  final SharedPreferences _sharedPreferences;
   final Ticker _ticker;
+  final DBService _dbService;
   static const int _duration = 16 * 60 * 60; // 16:8 FASTING
   int _elapsed = 0;
+  DateTime? _startTimer;
+  DateTime? _endTimer;
   StreamSubscription<int>? _tickerSubscription;
 
   ClockBloc({
     required Ticker ticker,
-    required SharedPreferences sharedPreferences,
+    required DBService dbService,
   })  : _ticker = ticker,
-        _sharedPreferences = sharedPreferences,
+        _dbService = dbService,
         super(const ClockInitial(_duration)) {
     WidgetsBinding.instance.addObserver(this);
     on<SetClock>(_setClock);
@@ -39,61 +42,74 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
     return super.close();
   }
 
-  void _init() {
-    final nowEpoch = DateTime.now().millisecondsSinceEpoch;
-    final startedEpoch = _sharedPreferences.getInt('saved_datetime') ?? 0;
-    final duration = _sharedPreferences.getInt('duration') ?? 0;
-
-    if (startedEpoch != 0) {
-      final now = DateTime.fromMillisecondsSinceEpoch(nowEpoch);
-      final started = DateTime.fromMillisecondsSinceEpoch(startedEpoch);
-      final elapsed = now.difference(started).inSeconds;
-      add(StartedFromPref(duration, elapsed: elapsed));
+  void _init() async {
+    TimerData? savedTimer = await _dbService.getTimer();
+    if (savedTimer != null) {
+      final now = DateTime.now();
+      final elapsed = now.difference(savedTimer.startTime).inSeconds;
+      _startTimer = savedTimer.startTime;
+      add(StartedFromPref(savedTimer.duration, elapsed: elapsed));
     }
   }
 
   void _onStartFromPref(StartedFromPref event, Emitter<ClockState> emit) {
     _elapsed = event.elapsed;
-    emit(ClockRunning(event.duration, event.elapsed));
+    _endTimer = _startTimer!.add(Duration(seconds: event.duration));
+    emit(ClockRunning(event.duration, event.elapsed,
+        startTimer: _startTimer, endTimer: _endTimer));
     _startTicker(event.duration, event.elapsed);
   }
 
-  void _onStarted(StartedClock event, Emitter<ClockState> emit) {
-    _sharedPreferences.remove('duration');
-    _sharedPreferences.setInt('duration', event.duration);
-    _sharedPreferences.remove('saved_datetime');
-    _sharedPreferences.setInt(
-        'saved_datetime', DateTime.now().millisecondsSinceEpoch);
-
+  void _onStarted(StartedClock event, Emitter<ClockState> emit) async {
+    await _dbService.deleteTimerData();
+    _startTimer = DateTime.now();
+    _endTimer = _startTimer!.add(Duration(seconds: event.duration));
+    TimerData newTimer = TimerData(
+      startTime: _startTimer!,
+      duration: event.duration,
+    );
+    await _dbService.insertTimer(newTimer);
     _elapsed = event.elapsed;
-    emit(ClockRunning(event.duration, event.elapsed));
+    emit(ClockRunning(event.duration, event.elapsed,
+        startTimer: _startTimer, endTimer: _endTimer));
     _startTicker(event.duration, event.elapsed);
   }
 
-  void _onChangeDuration(ChangeDuration event, Emitter<ClockState> emit) {
-    _sharedPreferences.remove('duration');
-    _sharedPreferences.setInt('duration', event.duration);
+  void _onChangeDuration(ChangeDuration event, Emitter<ClockState> emit) async {
+    //problema aqui borra toda la tabla incluyendo el elapsed
+    await _dbService.updateTimerData(newDuration: event.duration);
+    //await _dbService.deleteTimerData();
+    //_startTimer = DateTime.now();
+    _endTimer = _startTimer!.add(Duration(seconds: event.duration));
+    TimerData newTimer =
+        TimerData(startTime: _startTimer!, duration: event.duration);
+    //await _dbService.insertTimer(newTimer);
     _elapsed = event.elapsed;
-    emit(ClockRunning(event.duration, event.elapsed));
+    emit(ClockRunning(event.duration, event.elapsed,
+        startTimer: _startTimer, endTimer: _endTimer));
     _startTicker(event.duration, event.elapsed);
   }
 
-  void _onReset(ResetClock event, Emitter<ClockState> emit) {
-    _sharedPreferences.remove('saved_datetime');
-    _sharedPreferences.remove('duration');
+  void _onReset(ResetClock event, Emitter<ClockState> emit) async {
+    await _dbService.deleteTimerData();
     _tickerSubscription?.cancel();
+    _startTimer = null;
+    _endTimer = null;
     emit(ClockInitial(event.duration));
   }
 
   void _onCompleted(CompletedClock event, Emitter<ClockState> emit) {
-    emit(ClockCompleted(event.duration, event.elapsed));
+    emit(ClockCompleted(event.duration, event.elapsed,
+        starTimer: _startTimer, endTimer: _endTimer));
   }
 
   void _onTicked(TickedClock event, Emitter<ClockState> emit) {
     _elapsed++;
     emit(_elapsed < event.duration
-        ? ClockRunning(event.duration, _elapsed)
-        : ClockCompleted(event.duration, _elapsed));
+        ? ClockRunning(event.duration, _elapsed,
+            startTimer: _startTimer, endTimer: _endTimer)
+        : ClockCompleted(event.duration, _elapsed,
+            starTimer: _startTimer, endTimer: _endTimer));
   }
 
   void _setClock(SetClock event, Emitter<ClockState> emit) {
