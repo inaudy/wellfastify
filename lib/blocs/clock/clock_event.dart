@@ -27,7 +27,6 @@ class ChangeDuration extends ClockEvent {
 class StartedClock extends ClockEvent {
   final int duration;
   final int elapsed;
-
   const StartedClock(this.duration, {required this.elapsed});
 }
 

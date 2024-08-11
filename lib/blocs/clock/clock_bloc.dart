@@ -76,14 +76,8 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
   }
 
   void _onChangeDuration(ChangeDuration event, Emitter<ClockState> emit) async {
-    //problema aqui borra toda la tabla incluyendo el elapsed
     await _dbService.updateTimerData(newDuration: event.duration);
-    //await _dbService.deleteTimerData();
-    //_startTimer = DateTime.now();
     _endTimer = _startTimer!.add(Duration(seconds: event.duration));
-    TimerData newTimer =
-        TimerData(startTime: _startTimer!, duration: event.duration);
-    //await _dbService.insertTimer(newTimer);
     _elapsed = event.elapsed;
     emit(ClockRunning(event.duration, event.elapsed,
         startTimer: _startTimer, endTimer: _endTimer));
@@ -119,7 +113,7 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
   void _startTicker(int duration, int elapsed) {
     _tickerSubscription?.cancel();
     _tickerSubscription = _ticker
-        .tick(ticks: duration - elapsed)
+        .tick()
         .listen((_) => add(TickedClock(elapsed: _elapsed, duration: duration)));
   }
 

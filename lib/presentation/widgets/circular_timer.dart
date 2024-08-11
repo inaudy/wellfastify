@@ -34,16 +34,10 @@ class CircularTimer extends StatelessWidget {
           return Stack(
             fit: StackFit.expand,
             children: [
-              /*CircularProgressIndicator(
-                value: state.duration > 0
-                    ? state.elapsed / state.duration
-                    : 0 / 60,
-                //value: 1 / 60,
-                strokeWidth: 20,
-                backgroundColor: Colors.orange,
-                color: color1,
-              ),*/
-              CircularCanvas(progress: state.elapsed / state.duration),
+              if (state is ClockCompleted)
+                const CircularCanvas(progress: 1)
+              else
+                CircularCanvas(progress: state.elapsed / state.duration),
               Column(
                 children: [
                   Padding(

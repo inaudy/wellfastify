@@ -7,9 +7,7 @@ import 'package:wellfastify/models/weight._model.dart';
 class DBService {
   static final DBService _instance = DBService._internal();
   factory DBService() => _instance;
-
   static Database? _database;
-
   DBService._internal();
 
   Future<Database> get database async {
@@ -32,7 +30,9 @@ class DBService {
       CREATE TABLE fasting (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         startTime TEXT,
-        fastingHours TEXT
+        endTime TEXT,
+        fastingHours INTEGER,
+        date TEXT
       )
     ''');
 
@@ -79,6 +79,118 @@ class DBService {
   Future<int> deleteAllFastings() async {
     final db = await database;
     return await db.delete('fasting');
+  }
+
+  //Get Total Fasts
+  Future<int> getTotalFasts() async {
+    final db = await database;
+    print('getTotal');
+    final result = await db.rawQuery('SELECT COUNT(*) as total FROM fasting');
+    if (result.isNotEmpty && result.first['total'] != null) {
+      return result.first['total'] as int;
+    } else {
+      return 0;
+    }
+  }
+
+//Get Total Fasting time
+  Future<int> getTotalFastingTime() async {
+    final db = await database;
+    print('getTotalTime');
+    final result =
+        await db.rawQuery('SELECT SUM(fastingHours) as total FROM fasting');
+    if (result.isNotEmpty && result.first['total'] != null) {
+      return result.first['total'] as int;
+    } else {
+      return 0;
+    }
+  }
+
+// Longest Fast
+  Future<int> getLongestFast() async {
+    final db = await database;
+    print('getLongest');
+    final result =
+        await db.rawQuery('SELECT MAX(fastingHours) as longest FROM fasting');
+    if (result.isNotEmpty && result.first['longest'] != null) {
+      return result.first['longest'] as int;
+    } else {
+      return 0;
+    }
+  }
+
+  //Get Average Fasts
+  Future<int> getAverageFast() async {
+    final db = await database;
+    int averageInt = 0;
+    final result =
+        await db.rawQuery('SELECT AVG(fastingHours) as total FROM fasting');
+
+    if (result.isNotEmpty && result.first['total'] != null) {
+      averageInt = (result.first['total'] as double).toInt();
+      return averageInt;
+    } else {
+      return averageInt;
+    }
+  }
+
+  //Get Max Streak Fasts
+  Future<int> getMaxStreak() async {
+    final db = await database;
+    print('getmaxstreak');
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT DISTINCT date FROM fasting
+    ORDER BY date ASC
+  ''');
+    if (result.isEmpty) {
+      return 0;
+    }
+    int maxStreak = 1;
+    int currentStreak = 1;
+    DateTime? previousDate = DateTime.parse(result.first['date']);
+    for (int i = 1; i < result.length; i++) {
+      final DateTime currentDate = DateTime.parse(result[i]['date']);
+      if (currentDate.difference(previousDate!).inDays == 1) {
+        currentStreak++;
+        maxStreak = currentStreak > maxStreak ? currentStreak : maxStreak;
+      } else {
+        currentStreak = 1;
+      }
+      previousDate = currentDate;
+    }
+    return maxStreak;
+  }
+
+  //Get Current Streak
+  Future<int> getCurrentStreak() async {
+    final db = await database;
+    print('getcurrentstreak');
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT DISTINCT date FROM fasting
+    ORDER BY date ASC
+  ''');
+    if (result.isEmpty) {
+      return 0; // No data, no streak
+    }
+    int currentStreak = 1;
+    DateTime? previousDate = DateTime.parse(result.last['date']);
+    for (int i = result.length - 2; i >= 0; i--) {
+      final DateTime currentDate = DateTime.parse(result[i]['date']);
+      // Check if the current date is consecutive with the previous date
+      if (previousDate!.difference(currentDate).inDays == 1) {
+        currentStreak++;
+        previousDate = currentDate; // Move the previous date back one day
+      } else {
+        break; // Stop counting if the dates are not consecutive
+      }
+    }
+    // Check if the streak includes today
+    if (previousDate != null &&
+        DateTime.now().difference(previousDate).inDays > 1) {
+      currentStreak =
+          0; // No streak if the last fasting date is not yesterday or today
+    }
+    return currentStreak;
   }
 
   // CRUD methods for Weight

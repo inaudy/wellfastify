@@ -1,4 +1,5 @@
 import 'package:wellfastify/blocs/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/crud/crud_bloc.dart';
 import 'package:wellfastify/blocs/navigation/bottom_nav_cubit.dart';
 import 'package:wellfastify/models/ticker.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) =>
-              ClockBloc(ticker: const Ticker(), dbService: DBService()),
+          create: (_) => ClockBloc(ticker: Ticker(), dbService: DBService()),
         ),
         BlocProvider(
           create: (_) => BottomNavCubit(),
+        ),
+        BlocProvider(
+          create: (_) => CrudBloc(dbService: DBService()),
         ),
       ],
       child: MaterialApp.router(

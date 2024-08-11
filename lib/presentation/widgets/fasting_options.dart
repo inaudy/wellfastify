@@ -26,10 +26,6 @@ class FastingPlans extends StatelessWidget {
           return InkWell(
             onTap: () {
               final int planInSeconds = Duration(hours: plan).inSeconds;
-
-              //context.read<ClockBloc>().add(SetClock(plan, 0));
-              // aqui agregar para cambiar la duracion
-
               if (state.elapsed > 0) {
                 context.read<ClockBloc>().add(
                       ChangeDuration(planInSeconds, state.elapsed),

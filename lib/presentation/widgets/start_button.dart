@@ -12,11 +12,16 @@ class StartButton extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
           onPressed: () {
-            state is ClockInitial
-                ? context
-                    .read<ClockBloc>()
-                    .add(StartedClock(state.duration, elapsed: 0))
-                : context.read<ClockBloc>().add(ResetClock(state.duration));
+            if (state is ClockInitial) {
+              context
+                  .read<ClockBloc>()
+                  .add(StartedClock(state.duration, elapsed: 0));
+            } else if (state is ClockRunning) {
+              context.read<ClockBloc>().add(ResetClock(state.duration));
+            } else if (state is ClockCompleted) {
+              context.read<ClockBloc>().add(ResetClock(state.duration));
+              // Do nothing or handle completed state if needed
+            }
           },
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(

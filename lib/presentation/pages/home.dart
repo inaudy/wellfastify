@@ -1,7 +1,7 @@
 import 'package:wellfastify/blocs/clock/clock_bloc.dart';
 import 'package:wellfastify/presentation/theme_constants.dart';
 import 'package:wellfastify/presentation/widgets/circular_timer.dart';
-import 'package:wellfastify/presentation/widgets/start_button.dart';
+import 'package:wellfastify/presentation/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -18,12 +18,12 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     int elapsed = context.select((ClockBloc bloc) => bloc.state.elapsed);
+    int duration = context.select((ClockBloc bloc) => bloc.state.duration);
     DateTime startTime;
     DateTime endTime;
     if (elapsed > 0) {
       startTime = DateTime.now().subtract(Duration(seconds: elapsed));
-      endTime = startTime.add(Duration(
-          seconds: context.select((ClockBloc bloc) => bloc.state.duration)));
+      endTime = startTime.add(Duration(seconds: duration));
     } else {
       startTime = DateTime.now();
       endTime = startTime.add(Duration(
