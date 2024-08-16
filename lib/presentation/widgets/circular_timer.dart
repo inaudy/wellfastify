@@ -1,4 +1,4 @@
-import 'package:wellfastify/blocs/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
 import 'package:wellfastify/presentation/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

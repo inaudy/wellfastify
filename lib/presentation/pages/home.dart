@@ -1,4 +1,4 @@
-import 'package:wellfastify/blocs/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
 import 'package:wellfastify/presentation/theme_constants.dart';
 import 'package:wellfastify/presentation/widgets/circular_timer.dart';
 import 'package:wellfastify/presentation/widgets/button.dart';
@@ -189,6 +189,9 @@ class HomePageState extends State<HomePage> {
                             child: Row(
                               children: [
                                 Expanded(child: StartButton()),
+                                SizedBox(
+                                  height: 16,
+                                )
                               ],
                             ),
                           ),

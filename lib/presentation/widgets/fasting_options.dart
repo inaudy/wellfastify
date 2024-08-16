@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wellfastify/blocs/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
 
 class FastingPlans extends StatelessWidget {
   FastingPlans(

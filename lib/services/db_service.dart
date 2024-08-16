@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:wellfastify/models/fasting_model.dart';
 import 'package:wellfastify/models/timer_model.dart';
-import 'package:wellfastify/models/weight._model.dart';
+import 'package:wellfastify/models/weight_model.dart';
 
 class DBService {
   static final DBService _instance = DBService._internal();
@@ -51,6 +51,74 @@ class DBService {
         duration INTEGER
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE weightgoal (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        goal REAL        
+      )
+    ''');
+    // create a row after create the table
+    await db.insert('weightgoal', {'goal': 0.0});
+    //await _insertInitialFastingData(db);
+  }
+
+  Future<void> printAllFastings() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('fasting');
+
+    if (maps.isNotEmpty) {
+      for (var map in maps) {
+        print(
+            'ID: ${map['id']}, Start Time: ${map['startTime']}, End Time: ${map['endTime']}, Fasting Hours: ${map['fastingHours']}, Date: ${map['date']}');
+      }
+    } else {
+      print('No fasting data found.');
+    }
+  }
+
+  Future<void> _insertInitialFastingData(Database db) async {
+    List<Fasting> fastings = [
+      Fasting(
+          startTime: DateTime.parse('2024-08-05 18:00:00'),
+          endTime: DateTime.parse('2024-08-06 10:00:00'),
+          fastingHours: 6 * 3600,
+          date: DateTime.parse('2024-08-06 10:00:00')),
+      Fasting(
+          startTime: DateTime.parse('2024-08-06 18:00:00'),
+          endTime: DateTime.parse('2024-08-07 10:00:00'),
+          fastingHours: 22 * 3600,
+          date: DateTime.parse('2024-08-07 10:00:00')),
+      Fasting(
+          startTime: DateTime.parse('2024-08-07 18:00:00'),
+          endTime: DateTime.parse('2024-08-08 10:00:00'),
+          fastingHours: 20 * 3600,
+          date: DateTime.parse('2024-08-08 10:00:00')),
+      Fasting(
+          startTime: DateTime.parse('2024-08-08 18:00:00'),
+          endTime: DateTime.parse('2024-08-09 10:00:00'),
+          fastingHours: 18 * 3600,
+          date: DateTime.parse('2024-08-09 10:00:00')),
+      Fasting(
+          startTime: DateTime.parse('2024-08-09 18:00:00'),
+          endTime: DateTime.parse('2024-08-10 10:00:00'),
+          fastingHours: 10 * 3600,
+          date: DateTime.parse('2024-08-10 10:00:00')),
+      Fasting(
+          startTime: DateTime.parse('2024-08-10 18:00:00'),
+          endTime: DateTime.parse('2024-08-11 10:00:00'),
+          fastingHours: 16 * 3600,
+          date: DateTime.parse('2024-08-11 10:00:00')),
+      Fasting(
+          startTime: DateTime.parse('2024-08-11 18:00:00'),
+          endTime: DateTime.parse('2024-08-12 10:00:00'),
+          fastingHours: 16 * 3600,
+          date: DateTime.parse('2024-08-12 10:00:00')),
+    ];
+
+    for (var fasting in fastings) {
+      await db.insert('fasting', fasting.toMap());
+    }
   }
 
   // CRUD methods for Fasting
@@ -84,7 +152,6 @@ class DBService {
   //Get Total Fasts
   Future<int> getTotalFasts() async {
     final db = await database;
-    print('getTotal');
     final result = await db.rawQuery('SELECT COUNT(*) as total FROM fasting');
     if (result.isNotEmpty && result.first['total'] != null) {
       return result.first['total'] as int;
@@ -96,7 +163,6 @@ class DBService {
 //Get Total Fasting time
   Future<int> getTotalFastingTime() async {
     final db = await database;
-    print('getTotalTime');
     final result =
         await db.rawQuery('SELECT SUM(fastingHours) as total FROM fasting');
     if (result.isNotEmpty && result.first['total'] != null) {
@@ -109,7 +175,6 @@ class DBService {
 // Longest Fast
   Future<int> getLongestFast() async {
     final db = await database;
-    print('getLongest');
     final result =
         await db.rawQuery('SELECT MAX(fastingHours) as longest FROM fasting');
     if (result.isNotEmpty && result.first['longest'] != null) {
@@ -137,7 +202,6 @@ class DBService {
   //Get Max Streak Fasts
   Future<int> getMaxStreak() async {
     final db = await database;
-    print('getmaxstreak');
     final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT DISTINCT date FROM fasting
     ORDER BY date ASC
@@ -164,40 +228,57 @@ class DBService {
   //Get Current Streak
   Future<int> getCurrentStreak() async {
     final db = await database;
-    print('getcurrentstreak');
     final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT DISTINCT date FROM fasting
-    ORDER BY date ASC
+    ORDER BY date DESC
   ''');
     if (result.isEmpty) {
       return 0; // No data, no streak
     }
+    DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
     int currentStreak = 1;
-    DateTime? previousDate = DateTime.parse(result.last['date']);
-    for (int i = result.length - 2; i >= 0; i--) {
+    DateTime? previousDate = DateTime.parse(result.first['date']);
+    if (yesterday.difference(previousDate).inDays > 0) {
+      return 0;
+    }
+    for (int i = 1; i < result.length; i++) {
       final DateTime currentDate = DateTime.parse(result[i]['date']);
-      // Check if the current date is consecutive with the previous date
       if (previousDate!.difference(currentDate).inDays == 1) {
         currentStreak++;
-        previousDate = currentDate; // Move the previous date back one day
-      } else {
-        break; // Stop counting if the dates are not consecutive
+        previousDate = currentDate;
+        break;
       }
     }
-    // Check if the streak includes today
-    if (previousDate != null &&
-        DateTime.now().difference(previousDate).inDays > 1) {
-      currentStreak =
-          0; // No streak if the last fasting date is not yesterday or today
-    }
+
     return currentStreak;
+  }
+
+  // In DBService class
+  Future<List<Map<String, dynamic>>> getFastingTimesForLastDays(
+      int days) async {
+    // Query to get the fasting times for the last 'days' number of days
+    final db = await database;
+    final List<Map<String, dynamic>> results = await db.rawQuery('''
+    SELECT date, SUM(fastingHours) as totalFastingTime
+    FROM fasting
+    WHERE date >= date('now', '-$days day')
+    GROUP BY date
+    ORDER BY date ASC;
+  ''');
+    return results;
   }
 
   // CRUD methods for Weight
   //Insert Weight
   Future<int> insertWeight(Weight weight) async {
     final db = await database;
+    print(weight.weight);
     return await db.insert('weight', weight.toMap());
+  }
+
+  Future<int> updateWeightGoal(double weight) async {
+    final db = await database;
+    return await db.update('weightgoal', {'goal': weight}, where: 'id = 1');
   }
 
   //Get all Weights
@@ -207,6 +288,29 @@ class DBService {
     return List.generate(maps.length, (i) {
       return Weight.fromMap(maps[i]);
     });
+  }
+
+  Future<double?> getWeightGoal() async {
+    final db = await database;
+    // Query to get the weight goal
+    final List<Map<String, dynamic>> result = await db.query(
+      'weightgoal',
+      limit: 1, // Ensure we only fetch the first (and only) row
+    );
+    if (result.isNotEmpty) {
+      // If a result exists, return the weight goal
+      return result.first['goal'] as double;
+    } else {
+      return 0.0;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getLastWeights() async {
+    final db = await database;
+    final List<Map<String, dynamic>> results = await db.rawQuery('''
+  SELECT * FROM weight ORDER BY date DESC LIMIT 7;
+''');
+    return results.reversed.toList();
   }
 
   //Delete Weight
@@ -231,7 +335,6 @@ class DBService {
   //Get Timer
   Future<TimerData?> getTimer() async {
     final db = await database;
-
     final List<Map<String, dynamic>> maps = await db.query('timer', limit: 1);
     if (maps.isNotEmpty) {
       return TimerData.fromMap(maps.first);

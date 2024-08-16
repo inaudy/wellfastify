@@ -1,6 +1,8 @@
-import 'package:wellfastify/blocs/clock/clock_bloc.dart';
-import 'package:wellfastify/blocs/crud/crud_bloc.dart';
+import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
+import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
 import 'package:wellfastify/blocs/navigation/bottom_nav_cubit.dart';
+import 'package:wellfastify/blocs/weight/bloc/weight_bloc.dart';
+import 'package:wellfastify/blocs/weightgoal/bloc/weightgoal_bloc.dart';
 import 'package:wellfastify/models/ticker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +11,8 @@ import 'package:wellfastify/services/db_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DBService dbService = DBService();
+  await dbService.printAllFastings();
   runApp(const MyApp());
 }
 
@@ -23,10 +27,16 @@ class MyApp extends StatelessWidget {
           create: (_) => ClockBloc(ticker: Ticker(), dbService: DBService()),
         ),
         BlocProvider(
-          create: (_) => BottomNavCubit(),
+          create: (_) => FastingBloc(dbService: DBService()),
         ),
         BlocProvider(
-          create: (_) => CrudBloc(dbService: DBService()),
+          create: (_) => WeightBloc(dbService: DBService()),
+        ),
+        BlocProvider(
+          create: (_) => WeightGoalBloc(dbService: DBService()),
+        ),
+        BlocProvider(
+          create: (_) => BottomNavCubit(),
         ),
       ],
       child: MaterialApp.router(

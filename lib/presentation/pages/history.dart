@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wellfastify/blocs/crud/crud_bloc.dart';
+import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
+import 'package:wellfastify/presentation/widgets/history_chart.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -13,26 +14,28 @@ class HistoryPage extends StatelessWidget {
     int longestFastTime;
     int maxStreak;
     int currentStreak;
-    context.read<CrudBloc>().add(LoadFastingData());
+    List<Map<String, dynamic>> fastingTimes;
+    context.read<FastingBloc>().add(FastingLoadData());
 
     return Container(
-      color: const Color.fromARGB(36, 63, 81, 181),
-      child: BlocBuilder<CrudBloc, CrudState>(
+      color: const Color.fromARGB(35, 88, 108, 225),
+      child: BlocBuilder<FastingBloc, FastingState>(
         builder: (context, state) {
-          if (state is CrudLoading) {
+          if (state is FastingLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is CrudError) {
+          if (state is FastingError) {
             return Center(child: Text('Failed to load data: ${state.message}'));
           }
           // Once data is loaded, calculate and display it
-          if (state is CrudLoaded) {
+          if (state is FastingCrudLoaded) {
             totalFasts = state.totalFasts;
             totalFastingTime = state.totalFastingTime;
             averageFast = state.averageFast;
             longestFastTime = state.longestFastTime;
             maxStreak = state.maxStreak;
             currentStreak = state.currentStreak;
+            fastingTimes = state.fastingTimes;
             return _buildStatistics(
               context,
               totalFasts,
@@ -41,6 +44,7 @@ class HistoryPage extends StatelessWidget {
               longestFastTime,
               maxStreak,
               currentStreak,
+              fastingTimes,
             );
           }
 
@@ -59,6 +63,7 @@ class HistoryPage extends StatelessWidget {
     int longestFastTime,
     int maxStreak,
     int currentStreak,
+    List<Map<String, dynamic>> fastingTimes,
   ) {
     return Column(
       children: [
@@ -69,8 +74,8 @@ class HistoryPage extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  context.read<CrudBloc>().add(DeleteAll());
-                  context.read<CrudBloc>().add(LoadFastingData());
+                  context.read<FastingBloc>().add(FastingDeleteAll());
+                  context.read<FastingBloc>().add(FastingLoadData());
                 },
                 child: const Icon(Icons.delete),
               ),
@@ -111,6 +116,10 @@ class HistoryPage extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(
+            height: 250,
+            width: 400,
+            child: BarChartSample(fastingTimes: fastingTimes)),
       ],
     );
   }

@@ -1,7 +1,7 @@
-import 'package:wellfastify/blocs/clock/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wellfastify/blocs/crud/crud_bloc.dart';
+import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
 import 'package:wellfastify/models/fasting_model.dart';
 
 class StartButton extends StatelessWidget {
@@ -40,7 +40,7 @@ class StartButton extends StatelessWidget {
                 fastingHours: fastingDuration.inSeconds,
                 date: DateTime.now(),
               );
-              context.read<CrudBloc>().add(CreateFasting(fasting));
+              context.read<FastingBloc>().add(FastingCreate(fasting));
             }
             context.read<ClockBloc>().add(ResetClock(state.duration));
           };
@@ -58,7 +58,7 @@ class StartButton extends StatelessWidget {
                 fastingHours: fastingDuration.inSeconds,
                 date: DateTime.now(),
               );
-              context.read<CrudBloc>().add(CreateFasting(fasting));
+              context.read<FastingBloc>().add(FastingCreate(fasting));
             }
             context.read<ClockBloc>().add(ResetClock(state.duration));
           };
