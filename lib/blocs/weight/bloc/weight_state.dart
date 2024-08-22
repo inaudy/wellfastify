@@ -8,8 +8,8 @@ class WeightLoading extends WeightState {}
 
 final class WeightLoaded extends WeightState {
   final double lastWeight;
-  final DateTime lastDate;
-  final List<Map<String, dynamic>> weights;
+  final DateTime? lastDate;
+  final List<Weight> weights;
   WeightLoaded(this.lastWeight, this.lastDate, this.weights);
 }
 

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:wellfastify/models/fasting_model.dart';
 
 class BarChartSample extends StatelessWidget {
-  final List<Map<String, dynamic>> fastingTimes;
+  final List<Fasting> fastingTimes;
+
   const BarChartSample({super.key, required this.fastingTimes});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8))),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: BarChart(
@@ -21,7 +25,7 @@ class BarChartSample extends StatelessWidget {
             barGroups: barGroups(),
             gridData: const FlGridData(show: false),
             alignment: BarChartAlignment.spaceAround,
-            maxY: 24,
+            maxY: 24, // Adjust as needed
           ),
         ),
       ),
@@ -50,37 +54,17 @@ class BarChartSample extends StatelessWidget {
       color: Colors.black,
       fontSize: 12,
     );
-    String text;
-    switch (value.toInt()) {
-      case 0:
-        text = 'M';
-        break;
-      case 1:
-        text = 'T';
-        break;
-      case 2:
-        text = 'W';
-        break;
-      case 3:
-        text = 'T';
-        break;
-      case 4:
-        text = 'F';
-        break;
-      case 5:
-        text = 'S';
-        break;
-      case 6:
-        text = 'S';
-        break;
-      default:
-        text = '';
-        break;
+    int index = value.toInt();
+    if (index < 0 || index >= 7) {
+      return Container(); // Only show titles for 7 days
     }
+    DateTime date = DateTime.now().subtract(Duration(days: 6 - index));
+    String dayLetter = DateFormat.EEEE().format(date)[0];
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: style),
+      child: Text(dayLetter, style: style),
     );
   }
 
@@ -153,10 +137,21 @@ class BarChartSample extends StatelessWidget {
       );
 
   List<BarChartGroupData> barGroups() {
-    return fastingTimes.asMap().entries.map((entry) {
-      final index = entry.key;
+    // Create a list with the last 7 days
+    final lastSevenDays = List.generate(7, (index) {
+      final dayIndex = 6 - index; // To start from the most recent day
+      final date = DateTime.now().subtract(Duration(days: dayIndex));
+      final fastingData = fastingTimes.firstWhere(
+        (fasting) =>
+            fasting.startTime.year == date.year &&
+            fasting.startTime.month == date.month &&
+            fasting.startTime.day == date.day,
+        orElse: () => Fasting(
+            startTime: date, fastingHours: 0, endTime: date, date: date),
+      );
+
       final fastingTime =
-          entry.value['totalFastingTime'] / 3600.0; // Convert seconds to hours
+          fastingData.fastingHours / 3600.0; // Convert seconds to hours
 
       return BarChartGroupData(
         x: index,
@@ -171,100 +166,8 @@ class BarChartSample extends StatelessWidget {
         ],
         showingTooltipIndicators: [0],
       );
-    }).toList();
-  }
+    });
 
-  /*List<BarChartGroupData> get barGroups => [
-        BarChartGroupData(
-          x: 0,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.blue[50]),
-              width: 14,
-              toY: 24,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 1,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.indigo[50]),
-              width: 14,
-              toY: 10,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.indigo[50]),
-              width: 14,
-              toY: 14,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.indigo[50]),
-              width: 14,
-              toY: 15,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.indigo[50]),
-              width: 14,
-              toY: 13,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.indigo[50]),
-              width: 14,
-              toY: 10,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              backDrawRodData: BackgroundBarChartRodData(
-                  show: true, toY: 24, color: Colors.indigo[50]),
-              width: 14,
-              toY: 16,
-              gradient: _barsGradient,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];*/
+    return lastSevenDays;
+  }
 }

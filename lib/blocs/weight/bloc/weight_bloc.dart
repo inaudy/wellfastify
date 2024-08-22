@@ -17,6 +17,7 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
     emit(WeightLoading());
     try {
       await dbService.insertWeight(event.weight);
+      add(WeightLoadData());
       emit(WeightOperationSuccess());
     } catch (e) {
       emit(WeightError('error loggin the weight $e'));
@@ -36,6 +37,7 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
   void _onDeleteAll(WeightDeleteAll event, Emitter<WeightState> emit) async {
     try {
       await dbService.deleteAllWeights();
+      add(WeightLoadData());
       emit(WeightOperationSuccess());
     } catch (e) {
       emit(WeightError('Failed to delete all data $e'));
@@ -45,13 +47,17 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
   void _onLoad(WeightLoadData event, Emitter<WeightState> emit) async {
     emit(WeightLoading());
     try {
-      final weights = await dbService.getLastWeights();
-      final lastWeightEntry = weights.last;
-      final lastweight = lastWeightEntry['weight'] as double;
-      final lastdate = DateTime.parse(lastWeightEntry['date'] as String);
-      emit(WeightLoaded(lastweight, lastdate, weights));
+      final weights = await dbService.getWeights();
+      if (weights.isEmpty) {
+        emit(WeightLoaded(0.0, null, weights));
+      } else {
+        final lastWeightEntry = weights.last;
+        final lastweight = lastWeightEntry.weight;
+        final lastdate = DateTime.parse(lastWeightEntry.date.toString());
+        emit(WeightLoaded(lastweight, lastdate, weights));
+      }
     } catch (e) {
-      emit(WeightError('error loading $e'));
+      emit(WeightError('Failed to load $e'));
     }
   }
 }

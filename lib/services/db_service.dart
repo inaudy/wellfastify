@@ -63,7 +63,7 @@ class DBService {
     //await _insertInitialFastingData(db);
   }
 
-  Future<void> printAllFastings() async {
+  /*Future<void> printAllFastings() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('fasting');
 
@@ -75,9 +75,9 @@ class DBService {
     } else {
       print('No fasting data found.');
     }
-  }
+  }*/
 
-  Future<void> _insertInitialFastingData(Database db) async {
+  /*Future<void> _insertInitialFastingData(Database db) async {
     List<Fasting> fastings = [
       Fasting(
           startTime: DateTime.parse('2024-08-05 18:00:00'),
@@ -119,7 +119,7 @@ class DBService {
     for (var fasting in fastings) {
       await db.insert('fasting', fasting.toMap());
     }
-  }
+  }*/
 
   // CRUD methods for Fasting
   //Insert Fasting
@@ -272,7 +272,6 @@ class DBService {
   //Insert Weight
   Future<int> insertWeight(Weight weight) async {
     final db = await database;
-    print(weight.weight);
     return await db.insert('weight', weight.toMap());
   }
 

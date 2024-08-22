@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
+import 'package:wellfastify/models/fasting_model.dart';
 import 'package:wellfastify/presentation/widgets/history_chart.dart';
 
+//cargar toda la data del history scrolable izquierda
+//implementar la grafica del peso en las mismas condiciones
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
 
@@ -14,7 +17,7 @@ class HistoryPage extends StatelessWidget {
     int longestFastTime;
     int maxStreak;
     int currentStreak;
-    List<Map<String, dynamic>> fastingTimes;
+    List<Fasting> fastingTimes;
     context.read<FastingBloc>().add(FastingLoadData());
 
     return Container(
@@ -35,7 +38,8 @@ class HistoryPage extends StatelessWidget {
             longestFastTime = state.longestFastTime;
             maxStreak = state.maxStreak;
             currentStreak = state.currentStreak;
-            fastingTimes = state.fastingTimes;
+            fastingTimes = state.fastingList;
+
             return _buildStatistics(
               context,
               totalFasts,
@@ -63,12 +67,12 @@ class HistoryPage extends StatelessWidget {
     int longestFastTime,
     int maxStreak,
     int currentStreak,
-    List<Map<String, dynamic>> fastingTimes,
+    List<Fasting> fastingTimes,
   ) {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 10, right: 10),
+          padding: const EdgeInsets.only(top: 10, right: 10, bottom: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -85,13 +89,13 @@ class HistoryPage extends StatelessWidget {
         Column(
           children: [
             Container(
-              margin: const EdgeInsets.all(10),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(5.0),
                 child: Column(
                   children: [
                     _buildStatRow(
@@ -116,10 +120,16 @@ class HistoryPage extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
-            height: 250,
-            width: 400,
-            child: BarChartSample(fastingTimes: fastingTimes)),
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          child: SizedBox(
+              height: 250,
+              width: MediaQuery.sizeOf(context).width,
+              child: BarChartSample(fastingTimes: fastingTimes)),
+        ),
       ],
     );
   }
@@ -137,14 +147,14 @@ class HistoryPage extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!
-                  .copyWith(color: Colors.grey, fontWeight: FontWeight.bold),
+                  .copyWith(color: Colors.black, fontWeight: FontWeight.w700),
             ),
             Text(
               value1,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold, color: Colors.indigo),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.indigo,
+                  fontSize: 22),
             ),
           ],
         ),
@@ -156,17 +166,17 @@ class HistoryPage extends StatelessWidget {
           children: [
             Text(
               label2,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: Colors.grey, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16),
             ),
             Text(
               value2,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(fontWeight: FontWeight.bold, color: Colors.indigo),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.indigo,
+                  fontSize: 22),
             ),
           ],
         ),

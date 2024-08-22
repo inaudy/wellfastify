@@ -189,12 +189,12 @@ class HomePageState extends State<HomePage> {
                             child: Row(
                               children: [
                                 Expanded(child: StartButton()),
-                                SizedBox(
-                                  height: 16,
-                                )
                               ],
                             ),
                           ),
+                          const SizedBox(
+                            height: 16,
+                          )
                         ],
                       ),
                     ),

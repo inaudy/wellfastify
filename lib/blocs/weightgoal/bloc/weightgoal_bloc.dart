@@ -12,8 +12,8 @@ class WeightGoalBloc extends Bloc<WeightGoalEvent, WeightGoalState> {
 
   void _onUpdate(WeightGoalUpdate event, Emitter<WeightGoalState> emit) async {
     try {
-      print('update emit ${event.goal}');
       await dbService.updateWeightGoal(event.goal);
+      add(WeightGoalLoadData());
     } catch (e) {
       emit(WeightGoalError('error updating weight goal $e'));
     }
@@ -24,7 +24,6 @@ class WeightGoalBloc extends Bloc<WeightGoalEvent, WeightGoalState> {
       double? currentGoal = await dbService.getWeightGoal();
       if (currentGoal != null) {
         emit(WeightGoalLoaded(currentGoal));
-        print('load data emit $currentGoal');
       } else {
         emit(WeightGoalLoaded(0)); // Default value if not set
       }

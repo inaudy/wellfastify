@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wellfastify/models/ticker.dart';
 import 'package:wellfastify/models/timer_model.dart';
+import 'package:wellfastify/notification/notification.dart';
 import 'package:wellfastify/services/db_service.dart';
 part 'clock_event.dart';
 part 'clock_state.dart';
@@ -61,6 +62,13 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
   }
 
   void _onStarted(StartedClock event, Emitter<ClockState> emit) async {
+    NotificationService.showInstantNotification(
+        "Timer Started", "The Fasting is started");
+    NotificationService.scheduleNotification(
+        "Fasting Done",
+        "You have completed the fasting!",
+        DateTime.now().add(const Duration(seconds: 5)));
+
     await _dbService.deleteTimerData();
     _startTimer = DateTime.now();
     _endTimer = _startTimer!.add(Duration(seconds: event.duration));

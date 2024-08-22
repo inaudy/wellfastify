@@ -18,6 +18,7 @@ class FastingBloc extends Bloc<FastingEvent, FastingState> {
     emit(FastingLoading());
     try {
       await dbService.insertFasting(event.fasting);
+      add(FastingLoadData());
       emit(FastingOperationSuccess());
     } catch (e) {
       emit(FastingError('Failed to create fasting entry $e'));
@@ -64,10 +65,11 @@ class FastingBloc extends Bloc<FastingEvent, FastingState> {
       final longestFastTime = await dbService.getLongestFast();
       final maxStreak = await dbService.getMaxStreak();
       final currentStreak = await dbService.getCurrentStreak();
-      final fastingTimes = await dbService.getFastingTimesForLastDays(7);
+      //final fastingTimes = await dbService.getFastingTimesForLastDays(7);
+      final List<Fasting> fastingList = await dbService.getFastings();
 
       emit(FastingCrudLoaded(totalFasts, totalFastingTime, averageFast,
-          longestFastTime, maxStreak, currentStreak, fastingTimes));
+          longestFastTime, maxStreak, currentStreak, fastingList));
     } catch (e) {
       emit(FastingError('error loading data $e'));
     }

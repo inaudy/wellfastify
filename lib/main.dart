@@ -6,13 +6,15 @@ import 'package:wellfastify/blocs/weightgoal/bloc/weightgoal_bloc.dart';
 import 'package:wellfastify/models/ticker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wellfastify/notification/notification.dart';
 import 'package:wellfastify/router.dart';
 import 'package:wellfastify/services/db_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  DBService dbService = DBService();
-  await dbService.printAllFastings();
+  await NotificationService.init();
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 

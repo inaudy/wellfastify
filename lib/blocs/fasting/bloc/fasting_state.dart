@@ -13,7 +13,7 @@ class FastingCrudLoaded extends FastingState {
   final int longestFastTime;
   final int maxStreak;
   final int currentStreak;
-  final List<Map<String, dynamic>> fastingTimes;
+  final List<Fasting> fastingList;
   FastingCrudLoaded(
       this.totalFasts,
       this.totalFastingTime,
@@ -21,7 +21,7 @@ class FastingCrudLoaded extends FastingState {
       this.longestFastTime,
       this.maxStreak,
       this.currentStreak,
-      this.fastingTimes);
+      this.fastingList);
 }
 
 class FastingOperationSuccess extends FastingState {}
