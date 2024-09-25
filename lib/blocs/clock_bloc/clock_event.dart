@@ -8,7 +8,7 @@ class SetClock extends ClockEvent {
   final int duration;
   final int elapsed;
 
-  const SetClock(this.duration, this.elapsed);
+  const SetClock(this.elapsed, {required this.duration});
 }
 
 class StartedFromPref extends ClockEvent {

@@ -12,7 +12,7 @@ class BarChartSample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Colors.deepPurple,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       child: Padding(
@@ -51,7 +51,7 @@ class BarChartSample extends StatelessWidget {
 
   Widget getTitles(double value, TitleMeta meta) {
     const style = TextStyle(
-      color: Colors.black,
+      color: Colors.white,
       fontSize: 12,
     );
     int index = value.toInt();
@@ -70,7 +70,7 @@ class BarChartSample extends StatelessWidget {
 
   Widget getTitlesX(double value, TitleMeta meta) {
     const style = TextStyle(
-      color: Colors.black,
+      color: Colors.white,
       fontSize: 12,
     );
     String text;
@@ -129,8 +129,8 @@ class BarChartSample extends StatelessWidget {
 
   LinearGradient get _barsGradient => const LinearGradient(
         colors: [
-          Colors.indigo,
-          Colors.blue,
+          Colors.amber,
+          Colors.deepOrange,
         ],
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
@@ -141,7 +141,7 @@ class BarChartSample extends StatelessWidget {
     final lastSevenDays = List.generate(7, (index) {
       final dayIndex = 6 - index; // To start from the most recent day
       final date = DateTime.now().subtract(Duration(days: dayIndex));
-      final fastingData = fastingTimes.firstWhere(
+      final Fasting fasting = fastingTimes.firstWhere(
         (fasting) =>
             fasting.startTime.year == date.year &&
             fasting.startTime.month == date.month &&
@@ -151,14 +151,14 @@ class BarChartSample extends StatelessWidget {
       );
 
       final fastingTime =
-          fastingData.fastingHours / 3600.0; // Convert seconds to hours
+          fasting.fastingHours / 3600.0; // Convert seconds to hours
 
       return BarChartGroupData(
         x: index,
         barRods: [
           BarChartRodData(
             backDrawRodData: BackgroundBarChartRodData(
-                color: Colors.blue[50], show: true, toY: 24),
+                color: Colors.white, show: true, toY: 24),
             width: 14,
             toY: fastingTime,
             gradient: _barsGradient,

@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:wellfastify/models/fasting_model.dart';
 import 'package:wellfastify/models/timer_model.dart';
 import 'package:wellfastify/models/weight_model.dart';
+import 'dart:math';
 
 class DBService {
   static final DBService _instance = DBService._internal();
@@ -63,63 +64,30 @@ class DBService {
     //await _insertInitialFastingData(db);
   }
 
-  /*Future<void> printAllFastings() async {
+//mock data to test
+  Future<void> insertRandomFastingData() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('fasting');
+    final random = Random();
 
-    if (maps.isNotEmpty) {
-      for (var map in maps) {
-        print(
-            'ID: ${map['id']}, Start Time: ${map['startTime']}, End Time: ${map['endTime']}, Fasting Hours: ${map['fastingHours']}, Date: ${map['date']}');
-      }
-    } else {
-      print('No fasting data found.');
-    }
-  }*/
+    for (int i = 3; i < 10; i++) {
+      // Generate fasting data for the last 7 days
+      DateTime date = DateTime.now().subtract(Duration(days: i));
+      DateTime startTime = DateTime(date.year, date.month, date.day, 19,
+          random.nextInt(60)); // Approx 19:00
+      DateTime endTime = startTime.add(Duration(
+          hours: 16,
+          minutes: 30 + random.nextInt(60))); // Approx 11:30 next day
 
-  /*Future<void> _insertInitialFastingData(Database db) async {
-    List<Fasting> fastings = [
-      Fasting(
-          startTime: DateTime.parse('2024-08-05 18:00:00'),
-          endTime: DateTime.parse('2024-08-06 10:00:00'),
-          fastingHours: 6 * 3600,
-          date: DateTime.parse('2024-08-06 10:00:00')),
-      Fasting(
-          startTime: DateTime.parse('2024-08-06 18:00:00'),
-          endTime: DateTime.parse('2024-08-07 10:00:00'),
-          fastingHours: 22 * 3600,
-          date: DateTime.parse('2024-08-07 10:00:00')),
-      Fasting(
-          startTime: DateTime.parse('2024-08-07 18:00:00'),
-          endTime: DateTime.parse('2024-08-08 10:00:00'),
-          fastingHours: 20 * 3600,
-          date: DateTime.parse('2024-08-08 10:00:00')),
-      Fasting(
-          startTime: DateTime.parse('2024-08-08 18:00:00'),
-          endTime: DateTime.parse('2024-08-09 10:00:00'),
-          fastingHours: 18 * 3600,
-          date: DateTime.parse('2024-08-09 10:00:00')),
-      Fasting(
-          startTime: DateTime.parse('2024-08-09 18:00:00'),
-          endTime: DateTime.parse('2024-08-10 10:00:00'),
-          fastingHours: 10 * 3600,
-          date: DateTime.parse('2024-08-10 10:00:00')),
-      Fasting(
-          startTime: DateTime.parse('2024-08-10 18:00:00'),
-          endTime: DateTime.parse('2024-08-11 10:00:00'),
-          fastingHours: 16 * 3600,
-          date: DateTime.parse('2024-08-11 10:00:00')),
-      Fasting(
-          startTime: DateTime.parse('2024-08-11 18:00:00'),
-          endTime: DateTime.parse('2024-08-12 10:00:00'),
-          fastingHours: 16 * 3600,
-          date: DateTime.parse('2024-08-12 10:00:00')),
-    ];
+      Fasting fasting = Fasting(
+        startTime: startTime,
+        endTime: endTime,
+        fastingHours: endTime.difference(startTime).inHours * 60 * 60,
+        date: DateTime(date.year, date.month, date.day),
+      );
 
-    for (var fasting in fastings) {
       await db.insert('fasting', fasting.toMap());
     }
-  }*/
+  }
 
   // CRUD methods for Fasting
   //Insert Fasting
@@ -216,7 +184,9 @@ class DBService {
       final DateTime currentDate = DateTime.parse(result[i]['date']);
       if (currentDate.difference(previousDate!).inDays == 1) {
         currentStreak++;
-        maxStreak = currentStreak > maxStreak ? currentStreak : maxStreak;
+        if (currentStreak > maxStreak) {
+          maxStreak = currentStreak;
+        }
       } else {
         currentStreak = 1;
       }
@@ -230,22 +200,24 @@ class DBService {
     final db = await database;
     final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT DISTINCT date FROM fasting
-    ORDER BY date DESC
+    ORDER BY date ASC
   ''');
     if (result.isEmpty) {
       return 0; // No data, no streak
     }
     DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
     int currentStreak = 1;
-    DateTime? previousDate = DateTime.parse(result.first['date']);
+    DateTime? previousDate = DateTime.parse(result.last['date']);
     if (yesterday.difference(previousDate).inDays > 0) {
       return 0;
     }
     for (int i = 1; i < result.length; i++) {
-      final DateTime currentDate = DateTime.parse(result[i]['date']);
+      final DateTime currentDate =
+          DateTime.parse(result[result.length - 1 - i]['date']);
       if (previousDate!.difference(currentDate).inDays == 1) {
         currentStreak++;
         previousDate = currentDate;
+      } else {
         break;
       }
     }

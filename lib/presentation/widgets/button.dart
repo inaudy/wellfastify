@@ -1,8 +1,9 @@
-import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
+import 'package:wellfastify/blocs/clock_bloc/clock_bloc.dart';
+import 'package:wellfastify/blocs/fasting_bloc/fasting_bloc.dart';
 import 'package:wellfastify/models/fasting_model.dart';
+import 'package:wellfastify/core/constants/app_colors.dart';
 
 class StartButton extends StatelessWidget {
   const StartButton({super.key});
@@ -19,8 +20,8 @@ class StartButton extends StatelessWidget {
         Color? backgroundColor;
 
         if (state is ClockInitial) {
-          buttonText = 'START';
-          backgroundColor = Colors.indigo;
+          buttonText = 'Start';
+          backgroundColor = kButtonStartColor;
           onPress = () {
             context
                 .read<ClockBloc>()
@@ -29,8 +30,8 @@ class StartButton extends StatelessWidget {
         }
 
         if (state is ClockRunning) {
-          buttonText = 'STOP';
-          backgroundColor = Colors.red;
+          buttonText = 'Stop';
+          backgroundColor = kButtonStopColor;
           onPress = () {
             if (state.startTimer != null) {
               Duration fastingDuration = now.difference(state.startTimer!);
@@ -47,11 +48,11 @@ class StartButton extends StatelessWidget {
         }
 
         if (state is ClockCompleted) {
-          buttonText = 'COMPLETE';
-          backgroundColor = Colors.indigo;
+          buttonText = 'Complete';
+          backgroundColor = kButtonCompleteColor;
           onPress = () {
             if (state.startTimer != null) {
-              Duration fastingDuration = now.difference(startTimer!);
+              Duration fastingDuration = now.difference(state.startTimer!);
               fasting = Fasting(
                 startTime: state.startTimer!,
                 endTime: now,
@@ -64,18 +65,24 @@ class StartButton extends StatelessWidget {
           };
         }
 
-        return ElevatedButton(
-          onPressed: onPress,
-          style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-              ),
-              minimumSize: const Size.fromHeight(48),
-              backgroundColor: backgroundColor),
-          child: Text(
-            buttonText,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+        return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: ElevatedButton(
+            onPressed: onPress,
+            style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                //minimumSize: const Size.fromHeight(48),
+                fixedSize: const Size(200, 40),
+                backgroundColor: backgroundColor),
+            child: Text(
+              buttonText,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
           ),
         );
       },

@@ -1,13 +1,12 @@
-import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
-import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
-import 'package:wellfastify/blocs/navigation/bottom_nav_cubit.dart';
-import 'package:wellfastify/blocs/weight/bloc/weight_bloc.dart';
-import 'package:wellfastify/blocs/weightgoal/bloc/weightgoal_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:wellfastify/blocs/bloc_exports.dart';
+import 'package:wellfastify/core/theme/app_theme.dart';
+import 'package:wellfastify/cubits/customduration_cubit.dart';
 import 'package:wellfastify/models/ticker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wellfastify/notification/notification.dart';
-import 'package:wellfastify/router.dart';
+import 'package:wellfastify/routes/app_route.dart';
 import 'package:wellfastify/services/db_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -15,6 +14,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
   tz.initializeTimeZones();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
 }
 
@@ -40,8 +42,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => BottomNavCubit(),
         ),
+        BlocProvider(create: (_) => CustomdurationCubit()),
       ],
       child: MaterialApp.router(
+        theme: lightTheme,
+        themeMode: ThemeMode.light,
         routerConfig: router,
         debugShowCheckedModeBanner: false,
       ),

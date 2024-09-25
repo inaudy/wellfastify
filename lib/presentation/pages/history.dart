@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wellfastify/blocs/fasting/bloc/fasting_bloc.dart';
+import 'package:wellfastify/blocs/bloc_exports.dart';
 import 'package:wellfastify/models/fasting_model.dart';
 import 'package:wellfastify/presentation/widgets/history_chart.dart';
 
@@ -21,7 +21,11 @@ class HistoryPage extends StatelessWidget {
     context.read<FastingBloc>().add(FastingLoadData());
 
     return Container(
-      color: const Color.fromARGB(35, 88, 108, 225),
+      decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xff4B0082), Color(0xff0A0A0A)])),
       child: BlocBuilder<FastingBloc, FastingState>(
         builder: (context, state) {
           if (state is FastingLoading) {
@@ -89,13 +93,20 @@ class HistoryPage extends StatelessWidget {
         Column(
           children: [
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+              margin: const EdgeInsets.symmetric(horizontal: 25),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3), // Subtle Shadow
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(25.0),
                 child: Column(
                   children: [
                     _buildStatRow(
@@ -121,10 +132,10 @@ class HistoryPage extends StatelessWidget {
           ],
         ),
         const SizedBox(
-          height: 10,
+          height: 25,
         ),
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 25),
           child: SizedBox(
               height: 250,
               width: MediaQuery.sizeOf(context).width,
@@ -147,13 +158,13 @@ class HistoryPage extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!
-                  .copyWith(color: Colors.black, fontWeight: FontWeight.w700),
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.w700),
             ),
             Text(
               value1,
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Colors.indigo,
+                  color: Colors.white,
                   fontSize: 22),
             ),
           ],
@@ -167,7 +178,7 @@ class HistoryPage extends StatelessWidget {
             Text(
               label2,
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 16),
             ),
@@ -175,7 +186,7 @@ class HistoryPage extends StatelessWidget {
               value2,
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Colors.indigo,
+                  color: Colors.white,
                   fontSize: 22),
             ),
           ],

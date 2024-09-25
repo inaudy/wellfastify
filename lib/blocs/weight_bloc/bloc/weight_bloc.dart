@@ -46,6 +46,7 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
 
   void _onLoad(WeightLoadData event, Emitter<WeightState> emit) async {
     emit(WeightLoading());
+
     try {
       final weights = await dbService.getWeights();
       if (weights.isEmpty) {

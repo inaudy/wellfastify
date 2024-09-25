@@ -1,9 +1,8 @@
 // ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
+import 'package:wellfastify/blocs/clock_bloc/clock_bloc.dart';
 
 class FastingPlans extends StatelessWidget {
   FastingPlans(
@@ -32,7 +31,7 @@ class FastingPlans extends StatelessWidget {
                     );
               } else {
                 context.read<ClockBloc>().add(
-                      SetClock(planInSeconds, 0),
+                      SetClock(duration: planInSeconds, 0),
                     );
               }
               context.go('/home');

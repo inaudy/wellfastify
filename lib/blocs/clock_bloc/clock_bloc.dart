@@ -66,8 +66,8 @@ class ClockBloc extends Bloc<ClockEvent, ClockState>
         "Timer Started", "The Fasting is started");
     NotificationService.scheduleNotification(
         "Fasting Done",
-        "You have completed the fasting!",
-        DateTime.now().add(const Duration(seconds: 5)));
+        "Now you are ready to eat! ",
+        DateTime.now().add(Duration(seconds: state.duration)));
 
     await _dbService.deleteTimerData();
     _startTimer = DateTime.now();

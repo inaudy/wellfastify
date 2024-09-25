@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wellfastify/routes/route_name.dart';
 import 'package:wellfastify/presentation/pages/fasting_plans.dart';
 import 'package:wellfastify/presentation/pages/history.dart';
 import 'package:wellfastify/presentation/pages/home.dart';
@@ -7,7 +8,7 @@ import 'package:wellfastify/presentation/pages/weight.dart';
 import 'package:wellfastify/presentation/widgets/default_layout.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: RouteNames.home,
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, child) {
@@ -18,7 +19,7 @@ final GoRouter router = GoRouter(
           navigatorKey: GlobalKey<NavigatorState>(),
           routes: [
             GoRoute(
-              path: '/home',
+              path: RouteNames.home,
               builder: (context, state) => const HomePage(),
             ),
           ],
@@ -27,7 +28,7 @@ final GoRouter router = GoRouter(
           navigatorKey: GlobalKey<NavigatorState>(),
           routes: [
             GoRoute(
-              path: '/history',
+              path: RouteNames.history,
               builder: (context, state) => const HistoryPage(),
             ),
           ],
@@ -36,7 +37,7 @@ final GoRouter router = GoRouter(
           navigatorKey: GlobalKey<NavigatorState>(),
           routes: [
             GoRoute(
-              path: '/weight',
+              path: RouteNames.weight,
               builder: (context, state) => const WeightPage(),
             ),
           ],
@@ -45,7 +46,7 @@ final GoRouter router = GoRouter(
           navigatorKey: GlobalKey<NavigatorState>(),
           routes: [
             GoRoute(
-              path: '/widgets/fastingplans',
+              path: RouteNames.fastingplans,
               builder: (context, state) => const FastingPlansPage(),
             ),
           ],

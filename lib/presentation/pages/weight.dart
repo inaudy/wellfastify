@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:wellfastify/blocs/weight/bloc/weight_bloc.dart';
-import 'package:wellfastify/blocs/weightgoal/bloc/weightgoal_bloc.dart';
+import 'package:wellfastify/blocs/bloc_exports.dart';
 import 'package:wellfastify/models/weight_model.dart';
 import 'package:wellfastify/presentation/widgets/weight_chart.dart';
 
@@ -16,35 +15,31 @@ class WeightPage extends StatelessWidget {
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: Container(
-        height: MediaQuery.sizeOf(context).height,
-        color: const Color.fromARGB(36, 63, 81, 181),
-        child: BlocBuilder<WeightBloc, WeightState>(
-          builder: (context, weightState) {
-            return BlocBuilder<WeightGoalBloc, WeightGoalState>(
-              builder: (context, weigthGoalState) {
-                if (weightState is WeightLoading ||
-                    weigthGoalState is WeightGoalLoading) {
-                  return _buildStatistics(context,
-                      weightList: List.empty(), weightGoal: 0);
-                } else if (weightState is WeightLoaded &&
-                    weigthGoalState is WeightGoalLoaded) {
-                  return _buildStatistics(
-                    context,
-                    weightList: weightState.weights,
-                    weightGoal: weigthGoalState.goal,
-                  );
-                } else if (weightState is WeightError ||
-                    weigthGoalState is WeightGoalError) {
-                  return const Center(
-                    child: Text('Error loading data.'),
-                  );
-                }
-                return const Center(child: Text('No data available.'));
-              },
-            );
-          },
-        ),
+      child: BlocBuilder<WeightBloc, WeightState>(
+        builder: (context, weightState) {
+          return BlocBuilder<WeightGoalBloc, WeightGoalState>(
+            builder: (context, weigthGoalState) {
+              if (weightState is WeightLoading ||
+                  weigthGoalState is WeightGoalLoading) {
+                return _buildStatistics(context,
+                    weightList: List.empty(), weightGoal: 0);
+              } else if (weightState is WeightLoaded &&
+                  weigthGoalState is WeightGoalLoaded) {
+                return _buildStatistics(
+                  context,
+                  weightList: weightState.weights,
+                  weightGoal: weigthGoalState.goal,
+                );
+              } else if (weightState is WeightError ||
+                  weigthGoalState is WeightGoalError) {
+                return const Center(
+                  child: Text('Error loading data.'),
+                );
+              }
+              return const Center(child: Text('No data available.'));
+            },
+          );
+        },
       ),
     );
   }
@@ -113,7 +108,7 @@ class WeightPage extends StatelessWidget {
                                 .textTheme
                                 .bodyLarge!
                                 .copyWith(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700),
                           ),
@@ -128,7 +123,7 @@ class WeightPage extends StatelessWidget {
                               child: TextFormField(
                                 controller: weightController,
                                 style: const TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 16,
                                 ),
@@ -282,14 +277,32 @@ class WeightPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      BlocBuilder<WeightGoalBloc, WeightGoalState>(
-                        builder: (context, state) {
-                          double weightGoal = 0.0;
-                          if (state is WeightGoalLoaded) {
-                            weightGoal = state.goal;
-                          }
-                          return _buildStatRow(context, 'Goal',
-                              '$weightGoal kg', 'Missing', '2.0 kg');
+                      BlocBuilder<WeightBloc, WeightState>(
+                        builder: (context, weightstate) {
+                          return BlocBuilder<WeightGoalBloc, WeightGoalState>(
+                            builder: (context, goalstate) {
+                              double weightGoal = 0.0;
+                              double currentweight = 0.0;
+                              double missing = 0.0;
+                              if (goalstate is WeightGoalLoaded &&
+                                  weightstate is WeightLoaded) {
+                                weightGoal = goalstate.goal;
+                                currentweight = weightstate.lastWeight;
+                                missing = currentweight - weightGoal;
+                              }
+                              if (currentweight > 0 && weightGoal > 0) {
+                                return _buildStatRow(
+                                    context,
+                                    'Goal',
+                                    '$weightGoal kg',
+                                    'Missing',
+                                    '${missing < 0 ? '+${missing.toStringAsFixed(2)}' : missing.abs().toStringAsFixed(2)} kg');
+                              } else {
+                                return _buildStatRow(context, 'Goal',
+                                    '$weightGoal kg', 'Missing', '0.0 kg');
+                              }
+                            },
+                          );
                         },
                       ),
                       const SizedBox(height: 16),

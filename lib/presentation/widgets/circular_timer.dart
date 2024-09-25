@@ -1,11 +1,10 @@
-import 'package:wellfastify/blocs/clock/bloc/clock_bloc.dart';
-import 'package:wellfastify/presentation/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wellfastify/blocs/clock_bloc/clock_bloc.dart';
 import 'package:wellfastify/presentation/widgets/circular_canvas.dart';
 
 class CircularTimer extends StatelessWidget {
-  const CircularTimer({super.key});
+  const CircularTimer({super.key, required BuildContext context});
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +15,6 @@ class CircularTimer extends StatelessWidget {
         ((time / 60).floor() % 60).toString().padLeft(2, '0');
     final String hours = (time / 3600).floor().toString().padLeft(2, '0');
 
-//Remaining Timer
-    final int timeRemain =
-        context.select((ClockBloc bloc) => bloc.state.duration) -
-            context.select((ClockBloc bloc) => bloc.state.elapsed);
-    final String secondsRemain = (timeRemain % 60).toString().padLeft(2, '0');
-    final String minutesRemain =
-        ((timeRemain / 60).floor() % 60).toString().padLeft(2, '0');
-    final String hoursRemain =
-        (timeRemain / 3600).floor().toString().padLeft(2, '0');
-
     return SizedBox(
       width: 250,
       height: 250,
@@ -34,37 +23,43 @@ class CircularTimer extends StatelessWidget {
           return Stack(
             fit: StackFit.expand,
             children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 80.0),
+                    child: Text('Timer Elapsed',
+                        style: Theme.of(context).textTheme.bodyMedium!),
+                  )
+                ],
+              ),
               if (state is ClockCompleted)
                 const CircularCanvas(progress: 1)
               else
                 CircularCanvas(progress: state.elapsed / state.duration),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50.0),
-                    child: Text(
-                      'Timer Elapsed',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.blueGrey),
-                    ),
-                  )
-                ],
-              ),
-              Center(
-                child: BlocBuilder<ClockBloc, ClockState>(
-                    builder: (context, state) {
-                  return Text(
-                    '$hours:$minutes:$seconds',
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayMedium!
-                        .copyWith(color: color1, fontWeight: FontWeight.bold),
+              BlocBuilder<ClockBloc, ClockState>(
+                builder: (context, state) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: Text(
+                          '$hours:$minutes:$seconds',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium!
+                              .copyWith(
+                                  fontSize: 40, fontWeight: FontWeight.bold),
+                          //.copyWith(color: color1, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   );
-                }),
+                },
               ),
-              Padding(
+
+              /*Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: BlocBuilder<ClockBloc, ClockState>(
                   builder: (context, state) {
@@ -77,7 +72,7 @@ class CircularTimer extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
-                                .copyWith(color: Colors.blueGrey),
+                                .copyWith(color: Color(0xff1C1C21)),
                           ),
                           Text(
                             '$hoursRemain:$minutesRemain:$secondsRemain',
@@ -85,8 +80,9 @@ class CircularTimer extends StatelessWidget {
                                 .textTheme
                                 .titleLarge!
                                 .copyWith(
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.bold),
+                                  color: kButtonStopColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       );
@@ -100,7 +96,7 @@ class CircularTimer extends StatelessWidget {
                                 .textTheme
                                 .bodyLarge!
                                 .copyWith(
-                                    color: Colors.green,
+                                    color: Colors.indigo,
                                     fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -108,7 +104,7 @@ class CircularTimer extends StatelessWidget {
                     }
                   },
                 ),
-              )
+              )*/
             ],
           );
         },

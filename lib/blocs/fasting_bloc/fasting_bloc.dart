@@ -48,7 +48,7 @@ class FastingBloc extends Bloc<FastingEvent, FastingState> {
 
   void _onDeleteAll(FastingDeleteAll event, Emitter<FastingState> emit) async {
     try {
-      await dbService.deleteAllWeights();
+      await dbService.deleteAllFastings();
       emit(FastingOperationSuccess());
     } catch (e) {
       emit(FastingError('Failed to delete all datta $e'));
@@ -57,6 +57,7 @@ class FastingBloc extends Bloc<FastingEvent, FastingState> {
 
   void _onLoad(FastingLoadData event, Emitter<FastingState> emit) async {
     emit(FastingLoading());
+    //await dbService.insertRandomFastingData();
 
     try {
       final totalFasts = await dbService.getTotalFasts();
@@ -65,7 +66,6 @@ class FastingBloc extends Bloc<FastingEvent, FastingState> {
       final longestFastTime = await dbService.getLongestFast();
       final maxStreak = await dbService.getMaxStreak();
       final currentStreak = await dbService.getCurrentStreak();
-      //final fastingTimes = await dbService.getFastingTimesForLastDays(7);
       final List<Fasting> fastingList = await dbService.getFastings();
 
       emit(FastingCrudLoaded(totalFasts, totalFastingTime, averageFast,
