@@ -91,7 +91,7 @@ class ListWheelPicker extends StatelessWidget {
                   context
                       .read<ClockBloc>()
                       .add(SetClock(duration: selectedDuration * 60 * 60, 0));
-                  context.go('/home');
+                  context.go('/');
                   //Navigator.pop(context); // Closes the modal
                 },
                 child: const Text('Confirm'),

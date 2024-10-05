@@ -34,7 +34,7 @@ class FastingPlans extends StatelessWidget {
                       SetClock(duration: planInSeconds, 0),
                     );
               }
-              context.go('/home');
+              context.go('/');
             },
             borderRadius: BorderRadius.circular(16),
             splashColor: background.withOpacity(0.4),

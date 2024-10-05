@@ -38,7 +38,7 @@ class DefaultLayout extends StatelessWidget {
             },
             child: child),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),
+      //bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 }
