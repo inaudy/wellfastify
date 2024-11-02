@@ -21,18 +21,18 @@ class TimerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint backgroundPaint = Paint()
-      ..color = Color.fromARGB(255, 97, 173, 250).withOpacity(0.1)
+      ..color = const Color.fromARGB(255, 97, 173, 250).withOpacity(0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 20.0;
 
     Paint borderBackgroundPaint = Paint()
-      ..color = Color.fromARGB(255, 97, 173, 250).withOpacity(0.6)
+      ..color = const Color.fromARGB(255, 97, 173, 250).withOpacity(0.6)
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0)
       ..strokeWidth = 1.0;
 
     Paint progressPaint = Paint()
-      ..color = Color(0xff617AFA)
+      ..color = const Color(0xff617AFA)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6.0
       ..strokeCap = StrokeCap.round;
@@ -42,7 +42,7 @@ class TimerPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     Paint elapsedBorderPaintCircle = Paint()
-      ..color = Color(0xff617AFA)
+      ..color = const Color(0xff617AFA)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.0)
       ..style = PaintingStyle.stroke;
 

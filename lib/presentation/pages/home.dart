@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
-                                                color: Color(0xffEDF0F2)),
+                                                color: const Color(0xffEDF0F2)),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(14.0),
@@ -110,8 +110,8 @@ class HomePage extends StatelessWidget {
                                                     .textTheme
                                                     .displayMedium!
                                                     .copyWith(
-                                                        color:
-                                                            Color(0xffFA6161),
+                                                        color: const Color(
+                                                            0xffFA6161),
                                                         fontWeight:
                                                             FontWeight.bold),
                                                 //.copyWith(color: color1, fontWeight: FontWeight.bold),
@@ -125,7 +125,7 @@ class HomePage extends StatelessWidget {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
-                                                color: Color(0xffEDF0F2)),
+                                                color: const Color(0xffEDF0F2)),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(14.0),
@@ -135,8 +135,8 @@ class HomePage extends StatelessWidget {
                                                     .textTheme
                                                     .displayMedium!
                                                     .copyWith(
-                                                        color:
-                                                            Color(0xffFA6161),
+                                                        color: const Color(
+                                                            0xffFA6161),
                                                         fontWeight:
                                                             FontWeight.bold),
                                                 //.copyWith(color: color1, fontWeight: FontWeight.bold),
@@ -150,7 +150,7 @@ class HomePage extends StatelessWidget {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
-                                                color: Color(0xffEDF0F2)),
+                                                color: const Color(0xffEDF0F2)),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(14.0),
@@ -160,8 +160,8 @@ class HomePage extends StatelessWidget {
                                                     .textTheme
                                                     .displayMedium!
                                                     .copyWith(
-                                                        color:
-                                                            Color(0xffFA6161),
+                                                        color: const Color(
+                                                            0xffFA6161),
                                                         fontWeight:
                                                             FontWeight.bold),
                                                 //.copyWith(color: color1, fontWeight: FontWeight.bold),

@@ -12,7 +12,7 @@ final ThemeData lightTheme = ThemeData(
   textTheme: TextTheme(
       bodyLarge: fontTheme.copyWith(color: Colors.black),
       displayMedium:
-          fontTheme.copyWith(color: Color(0xff1C1C21), fontSize: 12)),
+          fontTheme.copyWith(color: const Color(0xff1C1C21), fontSize: 12)),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white, selectedItemColor: Colors.black),
 );

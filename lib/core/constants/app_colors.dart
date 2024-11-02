@@ -18,8 +18,8 @@ const Color kGradientEndColor = Colors.deepOrange;
 const Color kBackgroundColor = Color(0xffFAFAFA);
 
 /// Circular Canvas Background
-Color KPaintCircleBackground =
-    Color.fromARGB(255, 97, 173, 250).withOpacity(0.1);
+Color kPaintCircleBackground =
+    const Color.fromARGB(255, 97, 173, 250).withOpacity(0.1);
 
 /// Elapsed timer color
 const Color kElapsedPaintCircleColor = Colors.redAccent;

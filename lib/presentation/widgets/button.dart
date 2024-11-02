@@ -14,7 +14,7 @@ class StartButton extends StatelessWidget {
       builder: (context, state) {
         Fasting fasting;
         DateTime now = DateTime.now();
-        DateTime? startTimer;
+        //DateTime? startTimer;
         String buttonText = 'Start';
         Function()? onPress;
         Color? backgroundColor;

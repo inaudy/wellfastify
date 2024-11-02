@@ -15,13 +15,12 @@ class ClockInitial extends ClockState {
 }
 
 class ClockRunning extends ClockState {
-  const ClockRunning(int duration, int elapsed,
-      {DateTime? startTimer, DateTime? endTimer})
-      : super(duration, elapsed, startTimer: startTimer, endTimer: endTimer);
+  const ClockRunning(super.duration, super.elapsed,
+      {super.startTimer, super.endTimer});
 }
 
 class ClockCompleted extends ClockState {
-  const ClockCompleted(int duration, int elapsed,
-      {DateTime? starTimer, DateTime? endTimer})
-      : super(duration, elapsed, startTimer: starTimer, endTimer: endTimer);
+  const ClockCompleted(super.duration, super.elapsed,
+      {DateTime? starTimer, super.endTimer})
+      : super(startTimer: starTimer);
 }

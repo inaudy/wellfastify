@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wellfastify/blocs/navigation_bloc/bottom_nav_cubit.dart';
-import 'package:wellfastify/presentation/widgets/navigation_bar.dart';
 import 'package:wellfastify/routes/route_name.dart';
 
 class DefaultLayout extends StatelessWidget {
